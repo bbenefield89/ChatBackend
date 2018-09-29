@@ -1,0 +1,26 @@
+{
+  "name": "chatbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bbenefield89/ChatBackend.git"
+  },
+  "author": "Brandon Benefield",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bbenefield89/ChatBackend/issues"
+  },
+  "homepage": "https://github.com/bbenefield89/ChatBackend#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "mysql": "^2.16.0",
+    "nodemon": "^1.18.4"
+  }
+}
