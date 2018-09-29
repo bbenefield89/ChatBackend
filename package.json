@@ -20,7 +20,9 @@
   "dependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "mysql": "^2.16.0",
-    "nodemon": "^1.18.4"
+    "mysql2": "^1.6.1",
+    "nodemon": "^1.18.4",
+    "sequelize": "^4.39.0",
+    "socket.io": "^2.1.1"
   }
 }
