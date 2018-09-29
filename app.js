@@ -1,9 +1,9 @@
-const app = require('express')()
+const app  = require('express')()
 const cors = require('cors')
 const http = require('http').Server(app)
-const io = require('socket.io')(http)
-const db = require('./database/connection')
+const io   = require('socket.io')(http)
 
+const db   = require('./database/connection')
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
