@@ -2,19 +2,7 @@ const app = require('express')()
 const cors = require('cors')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const Sequelize = require('sequelize')
-
-const sequelize = new Sequelize('chat', 'root', 'root', {
-  host: '127.0.0.1',
-  dialect: 'mysql',
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  operatorsAliases: false
-})
+const db = require('./database/connection')
 
 const PORT = process.env.PORT || 3001
 
@@ -47,7 +35,7 @@ io.on('connection', socket => {
 http.listen(PORT, () => {
   console.log(`\nServer listening at http://localhost:${ PORT }\n`)
 
-  sequelize.authenticate()
+  db.authenticate()
     .then(() => {
       console.log('DATABASE CONNECTED')
     })
