@@ -3,11 +3,13 @@ const cors = require('cors')
 const http = require('http').Server(app)
 const io   = require('socket.io')(http)
 
-const db   = require('./database/connection')
+const REST    = require('./routes/rest')
+const db      = require('./database/connection')
 const Message = require('./database/models/messages')
-const PORT = process.env.PORT || 3001
+const PORT    = process.env.PORT || 3001
 
 app.use(cors())
+app.use('/api', REST)
 
 app.get('/', (req, res) => res.redirect('http://localhost:3000'))
 
@@ -25,7 +27,7 @@ io.on('connection', socket => {
 
   // SEND CHAT MESSAGE::RESP CHAT MESSAGE
   socket.on('SEND CHAT MESSAGE', data => {
-    const message = Message.create({
+    Message.create({
       username: 'Brandon Benefield',
       message: data
     })
@@ -33,6 +35,7 @@ io.on('connection', socket => {
         console.log(data.message)
         io.emit('RESP CHAT MESSAGE', data)
       })
+      .catch(err => console.log(err))
   })
 })
 
@@ -45,15 +48,9 @@ http.listen(PORT, () => {
   db.authenticate()
     .then(() => {
       console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
-
+      // synchronizes models with tables in DB
+      // if the table does NOT exist, create a new one
       Message.sync()
-        // .then(() => {
-        //   return Message.create({
-        //     username: 'Brandon Benefield',
-        //     message: 'My first message!'
-        //   })
-        // })
-        // .catch(err => console.log(err))
     })
     .catch(err => console.log(err))
 })
