@@ -2,20 +2,29 @@ const app = require('express')()
 const cors = require('cors')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const mysql = require('mysql')
+const Sequelize = require('sequelize')
+
+const sequelize = new Sequelize('chat', 'root', 'root', {
+  host: '127.0.0.1',
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  operatorsAliases: false
+})
 
 const PORT = process.env.PORT || 3001
-const connection = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'root',
-  password: 'root',
-  database: 'chat'
-})
 
 app.use(cors())
 
 app.get('/', (req, res) => res.redirect('http://localhost:3000'))
 
+/**
+ * WEBSOCKET CONNECT, EMITTERS, AND RECEIVERS
+ */
 io.on('connection', socket => {
   console.log('User Connected')
   
@@ -32,14 +41,15 @@ io.on('connection', socket => {
   })
 })
 
-http.listen(PORT, () => console.log(`\nServer listening at http://localhost:${ PORT }\n`))
+/**
+ * SERVE SERVER AT PORT AND CONNECT TO THE DB
+ */
+http.listen(PORT, () => {
+  console.log(`\nServer listening at http://localhost:${ PORT }\n`)
 
-// example of a very basic connect and query to the DB
-// connection.connect()
-
-// connection.query('SELECT * FROM Users', (err, rows, fields) => {
-//   if (err)
-//     throw err
-
-//   console.log(rows)
-// })
+  sequelize.authenticate()
+    .then(() => {
+      console.log('DATABASE CONNECTED')
+    })
+    .catch(err => console.log(`ERR Connecting to DB`))
+})
