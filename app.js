@@ -4,6 +4,7 @@ const http = require('http').Server(app)
 const io   = require('socket.io')(http)
 
 const db   = require('./database/connection')
+const Message = require('./database/models/messages')
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
@@ -14,7 +15,7 @@ app.get('/', (req, res) => res.redirect('http://localhost:3000'))
  * WEBSOCKET CONNECT, EMITTERS, AND RECEIVERS
  */
 io.on('connection', socket => {
-  console.log('User Connected')
+  console.log('\n\n=====\nUser Connected\n=====\n\n')
   
   // SEND::RESP
   socket.on('SEND', data => {
@@ -24,8 +25,14 @@ io.on('connection', socket => {
 
   // SEND CHAT MESSAGE::RESP CHAT MESSAGE
   socket.on('SEND CHAT MESSAGE', data => {
-    console.log(`\n${ data }\n`)
-    io.emit('RESP CHAT MESSAGE', data)
+    const message = Message.create({
+      username: 'Brandon Benefield',
+      message: data
+    })
+      .then(data => {
+        console.log(data.message)
+        io.emit('RESP CHAT MESSAGE', data)
+      })
   })
 })
 
@@ -37,7 +44,16 @@ http.listen(PORT, () => {
 
   db.authenticate()
     .then(() => {
-      console.log('DATABASE CONNECTED')
+      console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
+
+      Message.sync()
+        // .then(() => {
+        //   return Message.create({
+        //     username: 'Brandon Benefield',
+        //     message: 'My first message!'
+        //   })
+        // })
+        // .catch(err => console.log(err))
     })
-    .catch(err => console.log(`ERR Connecting to DB`))
+    .catch(err => console.log(err))
 })
