@@ -1,4 +1,5 @@
-const app  = require('express')()
+const express = require('express')
+const app  = express()
 const cors = require('cors')
 const http = require('http').Server(app)
 const io   = require('socket.io')(http)
@@ -11,7 +12,8 @@ const PORT    = process.env.PORT || 3001
 app.use(cors())
 app.use('/api', REST)
 
-app.get('/', (req, res) => res.redirect('http://localhost:3000'))
+// app.get('/', (req, res) => res.redirect('http://localhost:3000'))
+app.use(express.static('client/build'))
 
 /**
  * WEBSOCKET CONNECT, EMITTERS, AND RECEIVERS
