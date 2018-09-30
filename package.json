@@ -1,5 +1,9 @@
 {
   "name": "chatbackend",
+  "engines": {
+    "node": "8.12.0",
+    "npm": "6.4.1"
+  },
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
