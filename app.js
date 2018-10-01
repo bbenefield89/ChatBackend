@@ -68,7 +68,7 @@ http.listen(PORT, () => {
       // synchronizes models with tables in DB
       // if the table does NOT exist, create a new one
       Message.sync()
-      Users.sync()
+      return Users.sync()
     })
     .catch(err => console.log(err))
 })
