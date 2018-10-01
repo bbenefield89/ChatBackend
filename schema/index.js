@@ -1,28 +1,32 @@
 const graphql = require('graphql')
 
 const {
-  GraphQLID, GraphQLObjectType, GraphQLSchema, GraphQLString
+  GraphQLID, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLList
 } = graphql
 
 const Users = require('../database/models/users')
 
-const UserType = require('./query/users/user')
+const UserType  = require('./query/users/user')
+const UsersType = require('./query/users/users')
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
     user: {
       type: UserType,
-      
       args: {
         id: { type: GraphQLID }
       },
-
       resolve: (parent, args) => (
         Users.find({
           where: { id: args.id }
         })
       )
+    },
+
+    users: {
+      type: new GraphQLList(UsersType),
+      resolve: () => Users.findAll({})
     }
   }
 })
