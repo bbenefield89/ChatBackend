@@ -17,7 +17,7 @@
   },
   "scripts": {
     "nodemon": "nodemon app.js",
-    "postinstall": "yarn --prefix client && yarn build --prefix client",
+    "postinstall": "cd client && yarn && yarn build && cd ../",
     "start": "node app.js"
   },
   "proxy": "http://localhost:3001"
