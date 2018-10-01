@@ -2,19 +2,25 @@ require('dotenv').config()
 
 const PORT = process.env.PORT || 3001
 
-const express = require('express')
-const app     = express()
-const cors    = require('cors')
-const http    = require('http').Server(app)
-const io      = require('socket.io')(http)
+const express     = require('express')
+const app         = express()
+const cors        = require('cors')
+const graphqlHTTP = require('express-graphql')
+const http        = require('http').Server(app)
+const io          = require('socket.io')(http)
 
 const REST    = require('./routes/rest')
 const db      = require('./database/connection')
 const Message = require('./database/models/messages')
 const Users   = require('./database/models/users')
+const schema  = require('./schema')
 
 app.use(cors())
 app.use('/api', REST)
+app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true
+}))
 
 // allows the frontend to be viewed from express instead of a separate port
 app.use(express.static('client/build'))
