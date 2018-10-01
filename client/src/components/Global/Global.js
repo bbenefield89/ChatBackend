@@ -1,4 +1,6 @@
 import React, { createContext, Component } from 'react'
+import { ApolloProvider } from 'react-apollo'
+import ApolloClient from 'apollo-boost'
 import io from 'socket.io-client'
 
 export const Store = createContext()
@@ -12,6 +14,9 @@ class Global extends Component {
     }
 
     this.socket = io(this.state.socketURL)
+    this.client = new ApolloClient({
+      uri: `${ this.state.socketURL }/graphql`
+    })
   }
   
 
@@ -36,7 +41,9 @@ class Global extends Component {
           socket: this.socket
         }}
       >
-        { this.props.children }
+        <ApolloProvider client={ this.client }>
+          { this.props.children }
+        </ApolloProvider>
       </Store.Provider>
     )
   }
