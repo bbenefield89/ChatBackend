@@ -1,19 +1,22 @@
 require('dotenv').config()
 
+const PORT = process.env.PORT || 3001
+
 const express = require('express')
-const app  = express()
-const cors = require('cors')
-const http = require('http').Server(app)
-const io   = require('socket.io')(http)
+const app     = express()
+const cors    = require('cors')
+const http    = require('http').Server(app)
+const io      = require('socket.io')(http)
 
 const REST    = require('./routes/rest')
 const db      = require('./database/connection')
 const Message = require('./database/models/messages')
-const PORT    = process.env.PORT || 3001
+const Users   = require('./database/models/users')
 
 app.use(cors())
 app.use('/api', REST)
 
+// allows the frontend to be viewed from express instead of a separate port
 app.use(express.static('client/build'))
 
 /**
@@ -26,6 +29,11 @@ io.on('connection', socket => {
   socket.on('SEND', data => {
     console.log(`\n\n${ data }\n\n`)
     io.emit('RESP', data)
+  })
+
+  // SEND USER SIGNUP::RESP USER SIGNUP
+  socket.on('SEND USER SIGNUP', data => {
+    io.emit('RESP USER SIGNUP', data)
   })
 
   // SEND CHAT MESSAGE::RESP CHAT MESSAGE
@@ -54,6 +62,7 @@ http.listen(PORT, () => {
       // synchronizes models with tables in DB
       // if the table does NOT exist, create a new one
       Message.sync()
+      Users.sync()
     })
     .catch(err => console.log(err))
 })
