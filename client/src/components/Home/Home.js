@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 
 class Home extends Component {
   constructor(props) {
@@ -11,6 +13,15 @@ class Home extends Component {
         password: ''
       }
     }
+
+    this.createNewUser = gql`
+      mutation ($username: String!, $password: String!) {
+        createUser(username: $username, password: $password) {
+          id
+          username
+        }
+      }
+    `
   }
 
   // checkIfLoggedIn
@@ -32,14 +43,17 @@ class Home extends Component {
   }
 
   // signUp
-  signUp = e => {
+  signUp = (e, createNewUser) => {
     e.preventDefault()
-    
-    const req = {
-      method: 'POST',
-      url: `${ this.props.context.state.socketURL }/api/users/new`,
-      data: this.state.userInfo
-    }
+
+    createNewUser({
+      variables: {
+        username: this.state.userInfo.username,
+        password: this.state.userInfo.password
+      }
+    })
+      .then(data => console.log({ data }))
+      .catch(err => console.log({ err }))
   }
   
   // componentDidMount
@@ -54,28 +68,33 @@ class Home extends Component {
       <React.Fragment>
         <h1>Home</h1>
 
-        <form onSubmit={ this.signUp }>
-          <label htmlFor='username' />
-          <input
-            name='username'
-            onChange={ this.setInputVal }
-            type='text'
-            value={ this.state.userInfo.username }
-          />
+        <Mutation mutation={ this.createNewUser }>
+          {(createNewUser, { loading, err, data }) => {
+            return <form onSubmit={ e => this.signUp(e, createNewUser) }>
+              <label htmlFor='username' />
+              <input
+                name='username'
+                onChange={ this.setInputVal }
+                type='text'
+                value={ this.state.userInfo.username }
+              />
 
-          <label htmlFor='password' />
-          <input
-            name='password'
-            onChange={ this.setInputVal }
-            type='text'
-            value={ this.state.userInfo.password }
-          />
+              <label htmlFor='password' />
+              <input
+                name='password'
+                onChange={ this.setInputVal }
+                type='text'
+                value={ this.state.userInfo.password }
+              />
 
-          <input
-            type='submit'
-            value='Sign up'
-          />
-        </form>
+              <input
+                type='submit'
+                value='Sign up'
+              />
+            </form>
+          }}
+        
+        </Mutation>
       </React.Fragment>
     )
   }
