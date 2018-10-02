@@ -43,17 +43,23 @@ class Home extends Component {
   }
 
   // signUp
-  signUp = (e, createNewUser) => {
+  signUp = async (e, createNewUser) => {
     e.preventDefault()
 
-    createNewUser({
-      variables: {
-        username: this.state.userInfo.username,
-        password: this.state.userInfo.password
-      }
-    })
-      .then(data => console.log({ data }))
-      .catch(err => console.log({ err }))
+    try {
+      const newUser = await createNewUser({
+        variables: {
+          username: this.state.userInfo.username,
+          password: this.state.userInfo.password
+        }
+      })
+
+      console.log(newUser)
+    }
+    catch(err) {
+      console.log('Something went horribly.. HORRIBLY WRONG!')
+      console.log(err)
+    }
   }
   
   // componentDidMount
