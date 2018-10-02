@@ -1,13 +1,18 @@
 const graphql = require('graphql')
 
 const {
-  GraphQLID, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLList
+  GraphQLID, GraphQLObjectType, GraphQLSchema, GraphQLList
 } = graphql
 
+// DB models
 const Users = require('../database/models/users')
 
+// query types
 const UserType  = require('./query/users/user')
 const UsersType = require('./query/users/users')
+
+// mutations
+const createUser = require('./mutations/createUser')
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -34,21 +39,7 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    createUser: {
-      type: UserType,
-
-      args: {
-        username: { type: GraphQLString },
-        password: { type: GraphQLString }
-      },
-
-      resolve: (parent, args) => (
-        Users.create({
-          username: args.username,
-          password: args.password
-        })
-      )
-    }
+    createUser
   }
 })
 
