@@ -1,5 +1,6 @@
 const bcrypt  = require('bcrypt')
 const graphql = require('graphql')
+const jwt     = require('jsonwebtoken')
 
 const Users    = require('../../database/models/users')
 const UserType = require('../query/users/user')
@@ -31,7 +32,20 @@ const createUser = {
                 password: hash
               })
 
-              res(newUser)
+              const payload = {
+                sub: {
+                  id: newUser.id,
+                  username: newUser.username
+                }
+              }
+
+              const token = jwt.sign(payload, process.env.SECRET)
+
+              res({
+                token,
+                username: newUser.username,
+                id: newUser.id
+              })
             }
             catch(err) {
               rej(err)
