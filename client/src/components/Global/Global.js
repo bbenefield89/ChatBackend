@@ -1,6 +1,7 @@
 import React, { createContext, Component } from 'react'
-import { ApolloProvider } from 'react-apollo'
 import ApolloClient from 'apollo-boost'
+import Auth from '../../Auth/Auth'
+import { ApolloProvider } from 'react-apollo'
 import io from 'socket.io-client'
 
 export const Store = createContext()
@@ -13,10 +14,13 @@ class Global extends Component {
       socketURL: 'http://localhost:3001'
     }
 
-    this.socket = io(this.state.socketURL)
+    this.auth = new Auth()
+
     this.client = new ApolloClient({
       uri: `${ this.state.socketURL }/graphql`
     })
+
+    this.socket = io(this.state.socketURL)
   }
   
 
@@ -38,7 +42,8 @@ class Global extends Component {
       <Store.Provider
         value={{
           state: this.state,
-          socket: this.socket
+          socket: this.socket,
+          auth: this.auth
         }}
       >
         <ApolloProvider client={ this.client }>
