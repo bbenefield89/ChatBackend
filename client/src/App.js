@@ -20,8 +20,8 @@ class App extends Component {
     return (
       <div className="App">
         <Store.Consumer>
-          {({ auth }) => (
-            <Nav { ...auth } />
+          {context => (
+            <Nav { ...context } />
           )}
         </Store.Consumer>
         
