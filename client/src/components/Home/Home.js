@@ -14,6 +14,15 @@ class Home extends Component {
     this.props.auth.login()
   }
   
+  componentDidMount() {
+    this.props.auth.getProfile((err, profile) => {
+      if (err)
+        console.log(err)
+
+      console.log(profile)
+    })
+  }
+  
   // render
   render() {
     return (

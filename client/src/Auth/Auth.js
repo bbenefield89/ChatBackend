@@ -6,8 +6,10 @@ export default class Auth {
     clientID: 'jFYEg5DbnbQ1yj4ztXT6pFKGK0heeleE',
     redirectUri: 'http://localhost:3000/auth',
     responseType: 'token id_token',
-    scope: 'openid'
+    scope: 'openid profile'
   })
+
+  profile;
 
   login() {
     this.auth0.authorize()
@@ -51,5 +53,28 @@ export default class Auth {
     // Access Token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     return new Date().getTime() < expiresAt;
+  }
+
+  getAccessToken() {
+    const token = localStorage.getItem('access_token')
+
+    if (!token)
+      console.log('No access token found')
+
+    return token
+  }
+
+  getProfile(cb) {
+    let token = this.getAccessToken()
+
+    if (token)
+      this.auth0.client.userInfo(token, (err, profile) => {
+        if (profile) {
+          console.log(profile)
+          this.profile = profile
+        }
+
+        cb(err, profile)
+      })
   }
 }
