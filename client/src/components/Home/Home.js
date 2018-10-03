@@ -9,22 +9,9 @@ class Home extends Component {
     }
   }
 
-  // checkIfLoggedIn
-  checkIfLoggedIn = () => {
-    const token = localStorage.getItem('token')
-    if (token)
-      this.setState({ isLoggedIn: true })
-  }
-
   // signUp
   signUp = () => {
     this.props.auth.login()
-  }
-  
-  // componentDidMount
-  componentDidMount() {
-    if (/acces_token|id_token|error/.test(this.props.location.hash))
-      this.props.auth.handleAuthentication()
   }
   
   // render
