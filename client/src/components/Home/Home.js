@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 
+import Auth from '../../Auth/Auth'
+
+// const auth = new Auth()
+
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -19,9 +23,12 @@ class Home extends Component {
         createUser(username: $username, password: $password) {
           id
           username
+          token
         }
       }
     `
+
+    this.auth = new Auth()
   }
 
   // checkIfLoggedIn
@@ -46,36 +53,48 @@ class Home extends Component {
   signUp = async (e, createNewUser) => {
     e.preventDefault()
 
-    try {
-      const newUser = await createNewUser({
-        variables: {
-          username: this.state.userInfo.username,
-          password: this.state.userInfo.password
-        }
-      })
+    this.auth.login()
+    
+    // try {
+    //   const { username, password } = this.state.userInfo
+    //   const { data } = await createNewUser({
+    //     variables: { username, password }
+    //   })
 
-      console.log(newUser)
-    }
-    catch(err) {
-      console.log('Something went horribly.. HORRIBLY WRONG!')
-      console.log(err)
-    }
+    //   localStorage.setItem('token', data.createUser.token)
+    //   localStorage.setItem('id', data.createUser.id)
+    //   localStorage.setItem('username', data.createUser.username)
+    // }
+    // catch(err) {
+    //   console.log('Something went horribly.. HORRIBLY WRONG!')
+    //   console.log(err)
+    // }
   }
   
   // componentDidMount
   componentDidMount() {
-    this.checkIfLoggedIn()
+    // this.checkIfLoggedIn()
+    if (/acces_token|id_token|error/.test(this.props.location.hash))
+      this.auth.handleAuthentication()
   }
   
   // render
   render() {
-    console.log(this.props)
     return (
       <React.Fragment>
         <h1>Home</h1>
 
         <Mutation mutation={ this.createNewUser }>
           {(createNewUser, { loading, err, data }) => {
+            /**
+             * TODO: add handling for loading, err, and data
+             * 
+             * TODO: split this form into smaller components
+             */
+
+            if (data)
+              return this.props.history.push('/chat')
+
             return <form onSubmit={ e => this.signUp(e, createNewUser) }>
               <label htmlFor='username' />
               <input

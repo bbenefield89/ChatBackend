@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 
+import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
 import Home from './components/Home/Home'
 // import Nav from './components/Nav/Nav'
@@ -31,6 +32,9 @@ class App extends Component {
             </Store.Consumer>
           )}
         />
+
+
+        <Route path='/auth' component={ Callback } />
 
         <Route
           path='/chat'
