@@ -2,13 +2,20 @@ import React from 'react'
 
 import ChatForm from './ChatForm'
 import ChatMessagesList from './ChatMessagesList'
+import { Store } from '../Global/Global'
 
 const ChatWrapper = props => {
   return (
-    <React.Fragment>
-      <ChatMessagesList socket={ props.socket } />
-      <ChatForm socket={ props.socket } />
-    </React.Fragment>
+    <Store.Consumer>
+      {context => {
+        return (
+          <React.Fragment>
+            <ChatMessagesList { ...context } />
+            <ChatForm { ...context } />
+          </React.Fragment>
+        )
+      }}
+    </Store.Consumer>
   );
 }
  
