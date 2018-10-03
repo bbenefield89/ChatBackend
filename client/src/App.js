@@ -33,7 +33,6 @@ class App extends Component {
           )}
         />
 
-
         <Route path='/auth' component={ Callback } />
 
         <Route
