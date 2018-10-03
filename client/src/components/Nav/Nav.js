@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 
-import { Store } from '../Global/Global'
-
 class Nav extends Component {
   state = {}
 
