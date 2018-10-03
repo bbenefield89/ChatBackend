@@ -9,14 +9,12 @@ const graphqlHTTP = require('express-graphql')
 const http        = require('http').Server(app)
 const io          = require('socket.io')(http)
 
-const REST    = require('./routes/rest')
 const db      = require('./database/connection')
 const Message = require('./database/models/messages')
 const Users   = require('./database/models/users')
 const schema  = require('./schema')
 
 app.use(cors())
-app.use('/api', REST)
 app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true
