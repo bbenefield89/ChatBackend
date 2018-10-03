@@ -1,3 +1,0 @@
-[submodule "client"]
-	path = client
-	url = git@github.com:bbenefield89/ChatFrontend.git

@@ -3,9 +3,9 @@ import { Route } from 'react-router-dom'
 
 import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
-import Home from './components/Home/Home'
-// import Nav from './components/Nav/Nav'
 import { Store } from './components/Global/Global'
+import Home from './components/Home/Home'
+import Nav from './components/Nav/Nav'
 
 import './App.css'
 // import logo from './logo.svg';
@@ -19,6 +19,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Store.Consumer>
+          {context => (
+            <Nav { ...context } />
+          )}
+        </Store.Consumer>
+        
         <Route
           exact path='/'
           render={props => (
@@ -33,13 +39,25 @@ class App extends Component {
           )}
         />
 
-
-        <Route path='/auth' component={ Callback } />
+        <Route
+          path='/auth'
+          render={props => (
+            <Store.Consumer>
+              {context => (
+                <Callback { ...props } { ...context } />
+              )}
+            </Store.Consumer>
+          )}
+        />
 
         <Route
           path='/chat'
           render={props => (
-            <ChatWrapper { ...props } socket={ this.socket } />
+            <Store.Consumer>
+              {context => (
+                <ChatWrapper { ...props } { ...context } />
+              )}
+            </Store.Consumer>
           )}
         />
       </div>

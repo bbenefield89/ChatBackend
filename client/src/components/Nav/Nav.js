@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 
 class Nav extends Component {
   state = {}
+
   render() { 
     return (
       <nav>
-        <button>Sign up</button>
+        <button onClick={ this.props.auth.logout }>Log out</button>
       </nav>
-    );
+    )
   }
 }
  
