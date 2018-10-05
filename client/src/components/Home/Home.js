@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 
 class Home extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isLoggedIn: false
-    }
+  state = {
+    isLoggedIn: false
   }
 
   // signUp
@@ -14,6 +10,7 @@ class Home extends Component {
     this.props.auth.login()
   }
   
+  // componentDidMount
   componentDidMount() {
     this.props.auth.getProfile((err, profile) => {
       if (err)

@@ -2,21 +2,23 @@ import React from 'react'
 
 import ChatForm from './ChatForm'
 import ChatMessagesList from './ChatMessagesList'
-import { Store } from '../Global/Global'
 
-const ChatWrapper = props => {
+const ChatWrapper = ({ auth, socket, socketURL, username }) => {
   return (
-    <Store.Consumer>
-      {context => {
-        return (
-          <React.Fragment>
-            <ChatMessagesList { ...context } />
-            <ChatForm { ...context } />
-          </React.Fragment>
-        )
-      }}
-    </Store.Consumer>
-  );
+    <React.Fragment>
+      <ChatMessagesList
+        auth={ auth }
+        socket={ socket }
+        socketURL={ socketURL }
+      />
+
+      <ChatForm
+        auth={ auth }
+        socket={ socket }
+        username={ username }
+      />
+    </React.Fragment>
+  )
 }
  
 export default ChatWrapper

@@ -29,8 +29,8 @@ class ChatMessagesList extends Component {
   }
   
   componentDidMount() {
-    const url = `${ this.props.state.socketURL }/api/messages`
-
+    const url = `${ this.props.socketURL }/api/messages`
+    
     axios(url)
       .then(({ data }) => {
         this.setMessagesState(data)
@@ -43,8 +43,9 @@ class ChatMessagesList extends Component {
       <ul>
         {
           this.state.messages.map((message, index) => (
-            <li key={ message.id }>
-              { message.message }
+            <li key={ message.id } style={{marginBottom: '3rem'}}>
+              <p>{ message.username } <small>{ message.updatedAt }</small></p>
+              <p>{ message.message }</p>
             </li>
           ))
         }

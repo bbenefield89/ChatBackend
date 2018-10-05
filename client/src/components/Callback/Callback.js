@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 
 class Callback extends Component {
-  state = {}
-
   componentDidMount() {
     this.props.auth.handleAuthentication()
   }
