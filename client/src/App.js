@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
+import io from 'socket.io-client'
 
 import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
-import { Store } from './components/Global/Global'
 import Home from './components/Home/Home'
 import Nav from './components/Nav/Nav'
+
+import Auth from './Auth/Auth'
 
 import './App.css'
 // import logo from './logo.svg';
@@ -13,51 +15,63 @@ import './App.css'
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+
+    this.state = {
+      username: ''
+    }
+
+    this.auth = new Auth()
+    this.socketURL = 'http://localhost:3001'
+    this.socket = io(this.socketURL)
+  }
+
+  componentDidMount() {
+    this.auth.getProfile((err, profile) => {
+      if (err)
+        throw new Error(err)
+      
+      this.setState({ username: profile.nickname })
+    })
   }
   
   render() {
     return (
       <div className="App">
-        <Store.Consumer>
-          {context => (
-            <Nav { ...context } />
-          )}
-        </Store.Consumer>
-        
+        <Nav
+          auth={ this.auth }
+          username={ this.state.username }
+        />
+      
         <Route
           exact path='/'
           render={props => (
-            <Store.Consumer>
-              {context => (
-                <Home
-                  { ...props }
-                  { ...context }
-                />
-              )}
-            </Store.Consumer>
+            <Home
+              { ...props }
+              auth={ this.auth }
+            />
           )}
         />
 
         <Route
           path='/auth'
           render={props => (
-            <Store.Consumer>
-              {context => (
-                <Callback { ...props } { ...context } />
-              )}
-            </Store.Consumer>
+            <Callback
+              { ...props }
+              auth={ this.auth }
+            />
           )}
         />
 
         <Route
           path='/chat'
           render={props => (
-            <Store.Consumer>
-              {context => (
-                <ChatWrapper { ...props } { ...context } />
-              )}
-            </Store.Consumer>
+            <ChatWrapper
+              { ...props }
+              auth={ this.auth }
+              socket={ this.socket }
+              socketURL={ this.socketURL }
+              username={ this.state.username }
+            />
           )}
         />
       </div>

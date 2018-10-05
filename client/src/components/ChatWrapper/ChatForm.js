@@ -10,7 +10,13 @@ class ChatInput extends Component {
 
   sendMessage = e => {
     e.preventDefault()
-    this.props.socket.emit('SEND CHAT MESSAGE', this.state.message)
+
+    const messageData = {
+      message: this.state.message,
+      username: this.props.username
+    }
+    
+    this.props.socket.emit('SEND CHAT MESSAGE', messageData)
   }
 
   setMessageValue = e => {

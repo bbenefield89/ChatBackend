@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js'
 
-export default class Auth {
+class Auth {
   auth0 = new auth0.WebAuth({
     domain: 'bbenefield.auth0.com',
     clientID: 'jFYEg5DbnbQ1yj4ztXT6pFKGK0heeleE',
@@ -70,7 +70,6 @@ export default class Auth {
     if (token)
       this.auth0.client.userInfo(token, (err, profile) => {
         if (profile) {
-          console.log(profile)
           this.profile = profile
         }
 
@@ -78,3 +77,5 @@ export default class Auth {
       })
   }
 }
+
+export default Auth

@@ -45,11 +45,10 @@ io.on('connection', socket => {
   // SEND CHAT MESSAGE::RESP CHAT MESSAGE
   socket.on('SEND CHAT MESSAGE', data => {
     Message.create({
-      username: 'Brandon Benefield',
-      message: data
+      username: data.username,
+      message: data.message
     })
       .then(data => {
-        console.log(data.message)
         io.emit('RESP CHAT MESSAGE', data)
       })
       .catch(err => console.log(err))

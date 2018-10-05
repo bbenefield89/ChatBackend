@@ -1,15 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class Nav extends Component {
-  state = {}
-
-  render() { 
-    return (
-      <nav>
-        <button onClick={ this.props.auth.logout }>Log out</button>
-      </nav>
-    )
-  }
+const Nav = ({ auth, username }) => {
+  return (
+    <nav>
+      <p>{ username }</p>
+      <button onClick={ auth.logout }>Log out</button>
+    </nav>
+  )
 }
  
 export default Nav
