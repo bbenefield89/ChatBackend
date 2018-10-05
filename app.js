@@ -9,11 +9,12 @@ const graphqlHTTP = require('express-graphql')
 const http        = require('http').Server(app)
 const io          = require('socket.io')(http)
 
-const api     = require('./routes/api')
-const db      = require('./database/connection')
-const Message = require('./database/models/messages')
-const Users   = require('./database/models/users')
-const schema  = require('./schema')
+const api      = require('./routes/api')
+const db       = require('./database/connection')
+const socketio = require('./socketio/socketio')
+const Message  = require('./database/models/messages')
+const Users    = require('./database/models/users')
+const schema   = require('./schema')
 
 app.use(cors())
 app.use('/api', api)
@@ -26,48 +27,24 @@ app.use('/graphql', graphqlHTTP({
 app.use(express.static('client/build'))
 
 /**
- * WEBSOCKET CONNECT, EMITTERS, AND RECEIVERS
- */
-io.on('connection', socket => {
-  console.log('\n\n=====\nUser Connected\n=====\n\n')
-  
-  // SEND::RESP
-  socket.on('SEND', data => {
-    console.log(`\n\n${ data }\n\n`)
-    io.emit('RESP', data)
-  })
-
-  // SEND USER SIGNUP::RESP USER SIGNUP
-  socket.on('SEND USER SIGNUP', data => {
-    io.emit('RESP USER SIGNUP', data)
-  })
-
-  // SEND CHAT MESSAGE::RESP CHAT MESSAGE
-  socket.on('SEND CHAT MESSAGE', data => {
-    Message.create({
-      username: data.username,
-      message: data.message
-    })
-      .then(data => {
-        io.emit('RESP CHAT MESSAGE', data)
-      })
-      .catch(err => console.log(err))
-  })
-})
-
-/**
  * SERVE SERVER AT PORT AND CONNECT TO THE DB
  */
-http.listen(PORT, () => {
+http.listen(PORT, async () => {
   console.log(`\nServer listening at http://localhost:${ PORT }\n`)
 
-  db.authenticate()
-    .then(() => {
-      console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
-      // synchronizes models with tables in DB
-      // if the table does NOT exist, create a new one
-      Message.sync()
-      return Users.sync()
-    })
-    .catch(err => console.log(err))
+  // handles all of the socket-io emits/gets
+  socketio(io)
+  
+  try {
+    const dbAuth = await db.authenticate()
+    console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
+
+    // synchronizes models with tables in DB
+    // if the table does NOT exist, create a new one
+    Message.sync()
+    return Users.sync()
+  }
+  catch (err) {
+    console.log(err)
+  }
 })
