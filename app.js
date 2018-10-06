@@ -36,13 +36,13 @@ http.listen(PORT, async () => {
   socketio(io)
   
   try {
-    const dbAuth = await db.authenticate()
+    await db.authenticate()
     console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
 
     // synchronizes models with tables in DB
     // if the table does NOT exist, create a new one
     Message.sync()
-    return Users.sync()
+    Users.sync()
   }
   catch (err) {
     console.log(err)
