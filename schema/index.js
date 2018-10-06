@@ -14,6 +14,7 @@ const UsersType = require('./query/users/users')
 // mutations
 const createUser = require('./mutations/createUser')
 
+// RootQuery
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
@@ -31,11 +32,12 @@ const RootQuery = new GraphQLObjectType({
 
     users: {
       type: new GraphQLList(UsersType),
-      resolve: () => Users.findAll({})
+      resolve: () => Users.findAll()
     }
   }
 })
 
+// Mutation
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
