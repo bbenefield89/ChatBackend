@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import io from 'socket.io-client'
 
 import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
@@ -15,14 +14,12 @@ import './App.css'
 class App extends Component {
   constructor(props) {
     super(props)
-
+    
     this.state = {
-      username: ''
+      username: '',
     }
 
     this.auth = new Auth()
-    this.socketURL = 'http://localhost:3001'
-    this.socket = io(this.socketURL)
   }
 
   componentDidMount() {
@@ -68,8 +65,6 @@ class App extends Component {
             <ChatWrapper
               { ...props }
               auth={ this.auth }
-              socket={ this.socket }
-              socketURL={ this.socketURL }
               username={ this.state.username }
             />
           )}
