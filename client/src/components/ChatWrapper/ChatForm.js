@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 class ChatInput extends Component {
   constructor(props) {
@@ -13,10 +14,23 @@ class ChatInput extends Component {
 
     const messageData = {
       message: this.state.message,
-      username: this.props.username
+      username: 'bsquared18'
     }
-    
-    this.props.socket.emit('SEND CHAT MESSAGE', messageData)
+
+    axios({
+      method: 'POST',
+      url: 'http://localhost:3001/graphql',
+      data: {
+        query: `{
+          hellos {
+            id,
+            message
+          }
+        }`
+      }
+    })
+      .then(data => console.log(data))
+      .catch(err => console.log(err))
   }
 
   setMessageValue = e => {
