@@ -1,50 +1,43 @@
 require('dotenv').config()
 
-const PORT = process.env.PORT || 3001
+import express                from 'express'
+import { ApolloServer, gql }  from 'apollo-server-express'
+import { execute, subscribe } from 'graphql'
+import { createServer }       from 'http'
+import { SubscriptionServer } from 'subscriptions-transport-ws'
 
-const express     = require('express')
-const app         = express()
-const cors        = require('cors')
-const graphqlHTTP = require('express-graphql')
-const http        = require('http').Server(app)
-const io          = require('socket.io')(http)
+import { sequelize as db }  from './database/connection'
+import { typeDefs, schema } from './graphql/schema'
+import { resolvers }        from './graphql/resolvers'
 
-const api      = require('./routes/api')
-const db       = require('./database/connection')
-const socketio = require('./socketio/socketio')
-const Message  = require('./database/models/messages')
-const Users    = require('./database/models/users')
-const schema   = require('./schema')
+const PORT         = process.env.PORT || 3001;
+const app          = express();
+const ws           = createServer(app);
+const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
-app.use(cors())
-app.use('/api', api)
-app.use('/graphql', graphqlHTTP({
-  schema,
-  graphiql: true
-}))
+// allows express to serve the '/graphql' endpoint/graphiql-playground
+apolloServer.applyMiddleware({ app })
 
-// allows the frontend to be viewed from express instead of a separate port
-app.use(express.static('client/build'))
+ws.listen(PORT, async () => {
+  console.log(`WS listening at http://localhost:${ PORT }`)
 
-/**
- * SERVE SERVER AT PORT AND CONNECT TO THE DB
- */
-http.listen(PORT, async () => {
-  console.log(`\nServer listening at http://localhost:${ PORT }\n`)
+  await db.authenticate()
+  // try {
+  //   console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
+  // }
+  // catch (err) {
+  //   console.log(err)
+  // }
+});
 
-  // handles all of the socket-io emits/gets
-  socketio(io)
-  
-  try {
-    await db.authenticate()
-    console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
-
-    // synchronizes models with tables in DB
-    // if the table does NOT exist, create a new one
-    Message.sync()
-    Users.sync()
+SubscriptionServer.create(
+  {
+    schema,
+    execute,
+    subscribe
+  },
+  {
+    server: ws,
+    path: '/graphql'
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+)
