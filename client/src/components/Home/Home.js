@@ -16,7 +16,8 @@ class Home extends Component {
       if (err)
         console.log(err)
 
-      console.log(profile)
+      if (profile)
+        this.props.history.push('/chat')
     })
   }
   
