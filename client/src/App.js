@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import gql from 'graphql-tag'
 import { Route } from 'react-router-dom'
 
 import Callback from './components/Callback/Callback'
@@ -17,18 +18,26 @@ class App extends Component {
     
     this.state = {
       username: '',
+      loggedIn: false
     }
 
     this.auth = new Auth()
   }
 
   componentDidMount() {
-    this.auth.getProfile((err, profile) => {
-      if (err)
-        throw new Error(err)
-      
-      this.setState({ username: profile.nickname })
-    })
+    const loggedIn = this.auth.isAuthenticated()
+
+    if (loggedIn)
+      this.setState({ loggedIn })
+
+      this.auth.getProfile((err, profile) => {
+        if (err)
+          throw new Error(err)
+        
+        if (profile) {
+          this.setState({ username: profile.nickname })
+        }
+      })
   }
   
   render() {
@@ -36,6 +45,7 @@ class App extends Component {
       <div className="App">
         <Nav
           auth={ this.auth }
+          loggedIn={ this.state.loggedIn }
           username={ this.state.username }
         />
       
@@ -43,8 +53,8 @@ class App extends Component {
           exact path='/'
           render={props => (
             <Home
-              { ...props }
               auth={ this.auth }
+              loggedIn={ this.state.loggedIn }
             />
           )}
         />
