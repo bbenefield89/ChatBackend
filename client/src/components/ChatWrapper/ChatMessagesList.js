@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import gql from 'graphql-tag'
-import { Query, Subscription } from 'react-apollo'
+import { Subscription } from 'react-apollo'
 
 import Messages from './Messages'
 
@@ -51,18 +51,20 @@ class ChatMessagesList extends Component {
     })
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const req = {
       method: 'POST',
       url: 'http://localhost:3001/graphql',
       data: { query: MESSAGES }
     }
 
-    axios(req)
-      .then(({ data }) => {
-        this.setMessagesState(data.data.messages)
-      })
-      .catch(err => console.log(err))
+    try {
+      const { data } = await axios(req)
+      this.setMessagesState(data.data.messages)
+    }
+    catch(err) {
+      console.log(err)
+    }
   }
 
   render() {
