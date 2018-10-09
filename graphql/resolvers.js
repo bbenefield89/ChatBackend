@@ -1,8 +1,11 @@
 import { PubSub } from 'graphql-subscriptions'
 
-const pubsub = new PubSub();
-const HELLO_ADDED = 'helloAdded'
+import Message from '../database/models/Message'
+
+const pubsub       = new PubSub();
+const HELLO_ADDED  = 'helloAdded'
 const USER_CREATED = 'userCreated'
+const MESSAGE_CREATED = 'messageCreated'
 
 const hellos = [{
   id: 1,
@@ -20,6 +23,8 @@ const resolvers = {
     hello: (root, { id }) => {
       return hellos.find(hello => hello.id == id)
     },
+
+    messages: async () => Message.findAll(),
 
     users: () => users,
     user: (root, { id }) => users.find(user => user.id == id)
@@ -40,6 +45,12 @@ const resolvers = {
       users.push(newUser)
       pubsub.publish(USER_CREATED, { userCreated: newUser })
       return newUser
+    },
+
+    createMessage: async (root, { username, message }) => {
+      const newMessage = await Message.create({ username, message })
+      pubsub.publish(MESSAGE_CREATED, { newMessage })
+      return newMessage
     }
   },
 
@@ -50,6 +61,10 @@ const resolvers = {
 
     userCreated: {
       subscribe: () => pubsub.asyncIterator(USER_CREATED)
+    },
+
+    newMessage: {
+      subscribe: () => pubsub.asyncIterator(MESSAGE_CREATED)
     }
   }
 };
