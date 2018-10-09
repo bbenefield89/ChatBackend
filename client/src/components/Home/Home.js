@@ -8,10 +8,6 @@ class Home extends Component {
     this.props.auth.login()
   }
   
-  componentDidMount() {
-    this.props.isAuthenticated()
-  }
-  
   // render
   render() {
     return (
