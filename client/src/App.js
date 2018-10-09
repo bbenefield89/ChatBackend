@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import gql from 'graphql-tag'
 import { Route } from 'react-router-dom'
 
 import Callback from './components/Callback/Callback'
@@ -17,7 +16,7 @@ class App extends Component {
     super(props)
     
     this.state = {
-      username: '',
+      profile: {},
       isLoggedIn: false
     }
 
@@ -48,13 +47,29 @@ class App extends Component {
     }
   }
 
+  async componentDidMount() {
+    const isAuthenticated = await this.auth.isAuthenticated()
+    
+    if (isAuthenticated) {
+      await this.auth.getProfile((err, profile) => {
+        if (err)
+          throw new Error('ERROR: err IN APP cDM')
+
+        if (!profile)
+          throw new Error('ERROR GETTING profile IN APP cDM')
+        else
+          this.setState({ profile, isLoggedIn: true })
+      })
+    }
+  }
+
   render() {
     return (
       <div className="App">
         <Nav
           auth={ this.auth }
           isLoggedIn={ this.state.isLoggedIn }
-          username={ this.state.username }
+          username={ this.state.profile.nickname }
         />
       
         <Route
@@ -86,7 +101,7 @@ class App extends Component {
               { ...props }
               auth={ this.auth }
               isAuthenticated={ this.isAuthenticated }
-              username={ this.state.username }
+              username={ this.state.profile.nickname }
             />
           )}
         />
