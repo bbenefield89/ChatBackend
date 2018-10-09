@@ -17,7 +17,7 @@ const typeDefs = `
   type Message {
     id: ID!
     message: String!
-    user: User!
+    username: String!
   }
   
   type Query {
