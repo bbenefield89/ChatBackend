@@ -1,5 +1,17 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+// import axios from 'axios'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
+
+const CREATE_MESSAGE = gql`
+  mutation ($username: String!, $message: String!) {
+    createMessage (username: $username, message: $message) {
+      id
+      username
+      message
+    }
+  }
+`
 
 class ChatInput extends Component {
   constructor(props) {
@@ -9,28 +21,9 @@ class ChatInput extends Component {
     }
   }
 
-  sendMessage = e => {
+  sendMessage = (e, mutation) => {
     e.preventDefault()
-
-    const messageData = {
-      message: this.state.message,
-      username: 'bsquared18'
-    }
-
-    axios({
-      method: 'POST',
-      url: 'http://localhost:3001/graphql',
-      data: {
-        query: `{
-          hellos {
-            id,
-            message
-          }
-        }`
-      }
-    })
-      .then(data => console.log(data))
-      .catch(err => console.log(err))
+    mutation()
   }
 
   setMessageValue = e => {
@@ -40,15 +33,26 @@ class ChatInput extends Component {
 
   render() {
     return (
-      <form action='' onSubmit={ this.sendMessage }>
-        <input
-          autoComplete='off'
-          name='message'
-          onChange={ this.setMessageValue }
-          value={ this.state.message }
-        />
-        <button>Send</button>
-      </form>
+      <Mutation
+        mutation={ CREATE_MESSAGE }
+        variables={{ username: this.props.username, message: this.state.message }}
+      >
+        {(createMessage, { loading, error, data }) => {
+          return <form action='' onSubmit={ e => this.sendMessage(e, createMessage) }>
+            <input
+              autoComplete='off'
+              name='message'
+              onChange={ this.setMessageValue }
+              value={ this.state.message }
+            />
+            <button>Send</button>
+              {
+                error ? 'ERROR' : null
+              }
+          </form>
+        }}
+      
+      </Mutation>
     )
   }
 }
