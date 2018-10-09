@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-const Nav = ({ auth, loggedIn, username }) => {
+const Nav = ({ auth, isLoggedIn, username }) => {
   /**
    * TODO: this is the exact same logic for the 'login/signup' button in
    *       <Home /> make sure to make own component to reduce recreating same
@@ -15,7 +15,7 @@ const Nav = ({ auth, loggedIn, username }) => {
       <p>{ username }</p>
 
       {
-        loggedIn
+        isLoggedIn
         ?
           <button onClick={ auth.logout }>Log out</button>
         :

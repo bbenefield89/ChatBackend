@@ -18,34 +18,42 @@ class App extends Component {
     
     this.state = {
       username: '',
-      loggedIn: false
+      isLoggedIn: false
     }
 
     this.auth = new Auth()
   }
 
-  componentDidMount() {
-    const loggedIn = this.auth.isAuthenticated()
+  isAuthenticated = () => {
+    const isAuthenticated = this.auth.isAuthenticated()
 
-    if (loggedIn)
-      this.setState({ loggedIn })
-
+    console.log(isAuthenticated)
+    if (isAuthenticated) {
       this.auth.getProfile((err, profile) => {
         if (err)
-          throw new Error(err)
-        
+          throw new Error('ERROR GETTING PROFILE')
+
         if (profile) {
-          this.setState({ username: profile.nickname })
+          console.log(profile)
+          
+          return this.setState({
+            username: profile.nickname,
+            isLoggedIn: true
+          })
         }
       })
+    }
+    else {
+      return false
+    }
   }
-  
+
   render() {
     return (
       <div className="App">
         <Nav
           auth={ this.auth }
-          loggedIn={ this.state.loggedIn }
+          isLoggedIn={ this.state.isLoggedIn }
           username={ this.state.username }
         />
       
@@ -53,8 +61,10 @@ class App extends Component {
           exact path='/'
           render={props => (
             <Home
+              { ...props }
               auth={ this.auth }
-              loggedIn={ this.state.loggedIn }
+              isAuthenticated={ this.isAuthenticated }
+              isLoggedIn={ this.state.isLoggedIn }
             />
           )}
         />
@@ -75,6 +85,7 @@ class App extends Component {
             <ChatWrapper
               { ...props }
               auth={ this.auth }
+              isAuthenticated={ this.isAuthenticated }
               username={ this.state.username }
             />
           )}

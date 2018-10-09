@@ -1,24 +1,15 @@
 import React, { Component } from 'react'
 
 class Home extends Component {
-  state = {
-    isLoggedIn: false
-  }
-
+  state = {}
+  
   // signUp
   signUp = () => {
     this.props.auth.login()
   }
   
-  // componentDidMount
   componentDidMount() {
-    this.props.auth.getProfile((err, profile) => {
-      if (err)
-        console.log(err)
-
-      if (profile)
-        this.props.history.push('/chat')
-    })
+    this.props.isAuthenticated()
   }
   
   // render
@@ -28,7 +19,7 @@ class Home extends Component {
         <h1>Home</h1>
 
         <button onClick={ this.signUp }>
-          Sign up
+          Get Started
         </button>
       </React.Fragment>
     )
