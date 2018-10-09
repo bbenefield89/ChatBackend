@@ -1,8 +1,11 @@
 import React from 'react'
 
-const Message = ({ message }) => {
+const Message = ({ message, username }) => {
   return (
-    <p>{ message }</p>
+    <React.Fragment>
+      <p>{ username }</p>
+      <p>{ message }</p>
+    </React.Fragment>
   )
 }
  

@@ -5,7 +5,10 @@ import Message from './Message'
 const Messages = ({ messages }) => {
   return (
     messages.map(message => (
-      <Message key={ message.id } { ...message } />
+      <Message
+        { ...message }
+        key={ message.id }
+      />
     ))
   )
 }

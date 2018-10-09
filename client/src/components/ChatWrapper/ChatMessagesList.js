@@ -1,3 +1,11 @@
+/**
+ * TODO: Look into whether or not there is a better way to render the list of
+ *       messages. As it is right now, every time a new message is created the
+ *       entire <Messages /> or perhaps even this component is forced to
+ *       re-render. Need to find a way to only render the newest message being
+ *       received from the <Subscription /> component 
+ */
+
 import React, { Component } from 'react'
 import axios from 'axios'
 import gql from 'graphql-tag'
@@ -10,6 +18,7 @@ const MESSAGES = `
     messages {
       id
       message
+      username
     }
   }
 `
@@ -19,6 +28,7 @@ const NEW_MESSAGE = gql`
     newMessage {
       id
       message
+      username
     }
   }
 `
