@@ -9,6 +9,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws'
 
 import { sequelize as db }  from './database/connection'
 import Message              from './database/models/Message'
+import User                 from './database/models/User'
 import { schema, typeDefs } from './graphql/schema'
 import { resolvers }        from './graphql/resolvers'
 
@@ -54,6 +55,7 @@ ws.listen(PORT, async () => {
     console.log('\n\n=====\nDATABASE CONNECTED\n=====\n\n')
 
     await Message.sync()
+    await User.sync()
   }
   catch (err) {
     console.log(err)
