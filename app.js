@@ -32,6 +32,7 @@ const ws = createServer(app, (req, res) => {
 const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
 app.use(cors())
+app.use(express.static('./client/build'))
 
 // allows express to serve the '/graphql' endpoint/graphiql-playground
 apolloServer.applyMiddleware({ app })
