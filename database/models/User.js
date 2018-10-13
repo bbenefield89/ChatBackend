@@ -5,9 +5,30 @@ import { sequelize as db } from '../connection'
 const User = db.define(
   'user',
   {
-    name: { type: Sequelize.STRING },
-    nickname: { type: Sequelize.STRING },
-    picture: { type: Sequelize.STRING },
+    username: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      validate: {
+        len: [ 1, 25 ],
+        notEmpty: true,
+      }
+    },
+
+    password: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      validate: {
+        len: [ 1, 256 ],
+        notEmpty: true,
+      }
+    },
+    
+    picture: {
+      type: Sequelize.STRING,
+      validate: {
+        isUrl: true
+      }
+    },
   }
 )
 
