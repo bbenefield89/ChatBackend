@@ -1,10 +1,12 @@
 import auth0 from 'auth0-js'
 
+const redirectUri = process.env.NODE_ENV === 'production' ? 'https://limbochat.herokuapp.com' : 'http://localhost:3000'
+
 class Auth {
   auth0 = new auth0.WebAuth({
     domain: 'bbenefield.auth0.com',
     clientID: 'jFYEg5DbnbQ1yj4ztXT6pFKGK0heeleE',
-    redirectUri: 'http://localhost:3000/auth',
+    redirectUri: redirectUri + '/auth',
     responseType: 'token id_token',
     scope: 'openid profile'
   })
@@ -20,8 +22,10 @@ class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         console.log('good')
         this.setSession(authResult);
-        window.location.href = 'http://localhost:3000/chat'
-      } else if (err) {
+        // window.location.href = redirectUri + '/chat'
+        history.replace(redirectUri + '/chat')
+      }
+      else if (err) {
         console.log('bad')
         // history.replace('/home');
         console.log(err);
@@ -36,7 +40,7 @@ class Auth {
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
     // navigate to the home route
-    window.location.href = 'http://localhost:3000/chat'
+    window.location.href = redirectUri + '/chat'
   }
 
   logout() {
@@ -45,7 +49,7 @@ class Auth {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
     // navigate to the home route
-    window.location.href = 'http://localhost:3000';
+    window.location.href = redirectUri
   }
 
   isAuthenticated() {
