@@ -5,7 +5,7 @@ import { resolvers } from './resolvers'
 const typeDefs = `
   type User {
     id: ID!
-    nickname: String!
+    username: String!
     picture: String!
   }
 
@@ -23,11 +23,12 @@ const typeDefs = `
   }
 
   type Mutation {
+    createUser(username: String!, password: String!, picture: String!): User
     createMessage(username: String!, message: String!): Message
   }
 
   type Subscription {
-      userCreated: User
+      newUser: User
       newMessage: Message
   }
 `;
