@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
-class Callback extends Component {
+class Callback extends PureComponent {
   componentDidMount() {
     this.props.auth.handleAuthentication()
   }

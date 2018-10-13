@@ -6,7 +6,7 @@
  *       received from the <Subscription /> component 
  */
 
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import axios from 'axios'
 import gql from 'graphql-tag'
 import { Subscription } from 'react-apollo'
@@ -33,7 +33,7 @@ const NEW_MESSAGE = gql`
   }
 `
 
-class ChatMessagesList extends Component {
+class ChatMessagesList extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

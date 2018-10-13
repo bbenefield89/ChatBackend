@@ -1,11 +1,9 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import ChatForm from './ChatForm'
 import ChatMessagesList from './ChatMessagesList'
 
-class ChatWrapper extends Component {
-  state = {}
-  
+class ChatWrapper extends PureComponent {
   verifyLogin = async () => {
     const authOisAuthenticated = () => (
       new Promise((res, rej) => {
@@ -18,11 +16,17 @@ class ChatWrapper extends Component {
     if (data)
       this.props.isAuthenticated()
     else
-      this.props.history.push('/')
+      /**
+       * need to use the native 'window.location' for now
+       * for whatever reason using 'props.history.push' isnt working correctly
+       * my guess is that its because its being called from within cDM()
+       */
+      window.location = '/'
+      // this.props.history.push('/')
   }
   
   componentDidMount() {
-    // this.verifyLogin()
+    this.verifyLogin()
   }
   
   render() {

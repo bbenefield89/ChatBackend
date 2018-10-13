@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 // import axios from 'axios'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
@@ -13,7 +13,7 @@ const CREATE_MESSAGE = gql`
   }
 `
 
-class ChatInput extends Component {
+class ChatInput extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
