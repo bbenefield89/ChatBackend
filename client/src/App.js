@@ -7,8 +7,6 @@ import ChatWrapper from './components/ChatWrapper/ChatWrapper'
 import Home from './components/Home/Home'
 import Navigation from './components/Nav/Nav'
 
-import Auth from './Auth/Auth'
-
 import './App.css'
 // import logo from './logo.svg';
 
@@ -26,57 +24,13 @@ class App extends PureComponent {
       profile: {},
       isLoggedIn: false
     }
-
-    this.auth = new Auth()
-  }
-
-  isAuthenticated = () => {
-    const isAuthenticated = this.auth.isAuthenticated()
-
-    console.log(isAuthenticated)
-    if (isAuthenticated) {
-      this.auth.getProfile((err, profile) => {
-        if (err)
-          throw new Error('ERROR GETTING PROFILE')
-
-        if (profile) {
-          console.log(profile)
-          
-          return this.setState({
-            username: profile.nickname,
-            isLoggedIn: true
-          })
-        }
-      })
-    }
-    else {
-      return false
-    }
-  }
-
-  async componentDidMount() {
-    const isAuthenticated = await this.auth.isAuthenticated()
-    
-    if (isAuthenticated) {
-      await this.auth.getProfile((err, profile) => {
-        if (err)
-          throw new Error('ERROR: err IN APP cDM')
-
-        if (!profile)
-          throw new Error('ERROR GETTING profile IN APP cDM')
-        else
-          this.setState({ profile, isLoggedIn: true })
-      })
-    }
   }
 
   render() {
     return (
+
       <AppStyled className="App">
         <Navigation
-          auth={ this.auth }
-          isLoggedIn={ this.state.isLoggedIn }
-          username={ this.state.profile.nickname }
         />
       
         <Route
@@ -84,9 +38,6 @@ class App extends PureComponent {
           render={props => (
             <Home
               { ...props }
-              auth={ this.auth }
-              isAuthenticated={ this.isAuthenticated }
-              isLoggedIn={ this.state.isLoggedIn }
             />
           )}
         />
@@ -96,7 +47,6 @@ class App extends PureComponent {
           render={props => (
             <Callback
               { ...props }
-              auth={ this.auth }
             />
           )}
         />
@@ -106,9 +56,6 @@ class App extends PureComponent {
           render={props => (
             <ChatWrapper
               { ...props }
-              auth={ this.auth }
-              isAuthenticated={ this.isAuthenticated }
-              username={ this.state.profile.nickname }
             />
           )}
         />
