@@ -25,7 +25,7 @@
   "scripts": {
     "nodemon": "nodemon --ignore 'client/' --exec babel-node --presets env,stage-2 app.js",
     "postinstall": "cd client && yarn && yarn build && cd ../",
-    "start": "node app.js"
+    "start": "nodemon --exec babel-node --presets env,stage-2 app.js"
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
