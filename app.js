@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 import express                from 'express'
-import { ApolloServer, gql }  from 'apollo-server-express'
+import { ApolloServer }       from 'apollo-server-express'
 import cors                   from 'cors'
 import { execute, subscribe } from 'graphql'
 import { createServer }       from 'http'
