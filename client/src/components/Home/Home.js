@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 
 import Incentive from './modules/Incentive'
@@ -32,30 +32,31 @@ const CTABtnStyled = styled.button`
   }
 `
 
-const Home = ({ auth }) => {
-  // signUp
-  const signUp = () => {
-    auth.login()
+class Home extends Component {
+
+  componentDidUpdate() {
+    if (this.props.isLoggedIn)
+      this.props.history.push('/chat')
   }
   
   // render
-  return (
-    <HomeContainerStyled className='home_container'>
-      {incentiveData.map(({ incentiveHeaderText, incentiveImg }, ind) => (
-        <Incentive
-          key={ ind }
-          incentiveHeaderText={ incentiveHeaderText }
-          incentiveImg={ incentiveImg }
-        />
-      ))}
-
-      <CTABtnStyled
-        onClick={ signUp }
-      >
-        Get Your Limbo On!
-      </CTABtnStyled>
-    </HomeContainerStyled>
-  )
+  render() {
+    return (
+      <HomeContainerStyled className='home_container'>
+        {incentiveData.map(({ incentiveHeaderText, incentiveImg }, ind) => (
+          <Incentive
+            key={ ind }
+            incentiveHeaderText={ incentiveHeaderText }
+            incentiveImg={ incentiveImg }
+          />
+        ))}
+  
+        <CTABtnStyled>
+          Get Your Limbo On!
+        </CTABtnStyled>
+      </HomeContainerStyled>
+    )
+  }
 }
 
 export default Home

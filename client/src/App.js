@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
+import axios from 'axios'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
 import Home from './components/Home/Home'
 import Navigation from './components/Nav/Nav'
+import SignUpModal from './components/SignUpModal/SignUpModal'
 
 import './App.css'
 // import logo from './logo.svg';
@@ -16,21 +17,99 @@ const AppStyled = styled.div`
   color: #fafafa;
 `
 
-class App extends PureComponent {
+class App extends Component {
   constructor(props) {
     super(props)
     
     this.state = {
       profile: {},
-      isLoggedIn: false
+      isLoggedIn: false,
+      showSignUpModal: 'none'
     }
+  }
+
+  handleShowSignUpModal = () => {
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      this.isUserAuthenticated()
+    }
+    else {
+      const { showSignUpModal } = this.state
+      
+      if (showSignUpModal === 'block') {
+        this.setState({ showSignUpModal: 'none' })
+      }
+      else {
+        this.setState({ showSignUpModal: 'block' })
+      }
+    }
+  }
+
+  isUserAuthenticated = async () => {
+    const token = localStorage.getItem('token')
+
+    if (!token)
+      return this.setState({ isLoggedIn: false }, () => console.log('false'))
+
+    const req = {
+      method: 'POST',
+      url: 'http://localhost:3001/graphql',
+      data: {
+        query: `
+        query {
+          authenticateUser (token: "${ token }")
+        }
+        `
+      }
+    }
+
+    const { data } = await axios(req)
+    const { authenticateUser } = data.data
+
+    if (authenticateUser)
+      this.setState({ isLoggedIn: true }, () => console.log('true'))
+  }
+
+  handleLogout = history => {
+    localStorage.clear()
+
+    this.setState({
+      profile: {},
+      isLoggedIn: false
+    },
+      () => history.push('/')
+    )
+  }
+  
+  setProfileData = (token, user) => {
+    localStorage.setItem('token', token)
+    
+    this.setState({
+      profile: user,
+      isLoggedIn: true
+    })
   }
 
   render() {
     return (
 
       <AppStyled className="App">
-        <Navigation
+        <SignUpModal
+          display={ this.state.showSignUpModal }
+          setProfileData={ this.setProfileData }
+        />
+      
+        <Route
+          path='/'
+          render={props => (
+            <Navigation
+              { ...props }
+              handleShowSignUpModal={ this.handleShowSignUpModal }
+              isLoggedIn={ this.state.isLoggedIn }
+              handleLogout={ this.handleLogout }
+            />
+          )}
         />
       
         <Route
@@ -38,15 +117,7 @@ class App extends PureComponent {
           render={props => (
             <Home
               { ...props }
-            />
-          )}
-        />
-
-        <Route
-          path='/auth'
-          render={props => (
-            <Callback
-              { ...props }
+              isLoggedIn={ this.state.isLoggedIn }
             />
           )}
         />

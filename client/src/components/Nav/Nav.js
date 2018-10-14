@@ -1,5 +1,7 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
+
+import NavButton from './modules/NavButton'
 
 import limbochat from '../static/limbochat.png'
 
@@ -38,36 +40,27 @@ const NavItemStyled = styled.li`
   width: 100%;
 `
 
-const ButtonStyled = styled.button`
-  background: #393D3F;
-  border: 2px solid #393D3F;
-  color: #fafafa;
-  font-size: 1.6rem;
-  letter-spacing: 4px;
-  padding: 5px 0;
-  max-width: 220px;
-  width: 100%;
-`
+class Navigation extends Component {
+  renderLogInLogOutBtn = () => (
+    this.props.isLoggedIn || this.props.location.pathname === '/chat'
+    ?
+      <NavButton
+        className='nav_wrapper__links_list__item__logout_btn'
+        onClick={ () => this.props.handleLogout(this.props.history) }
+      >
+          Log out
+      </NavButton>
+    :
+      <NavButton
+        className='nav_wrapper__links_list__item__login_btn'
+        onClick={ this.props.handleShowSignUpModal }
+      >
+          Enter Limbo
+      </NavButton>
+  )
 
-class Navigation extends PureComponent { /*({ auth, isLoggedIn, username }) => { */
-  /**
-   * TODO: this is the exact same logic for the 'login/signup' button in
-   *       <Home /> make sure to make own component to reduce recreating same
-   *       methods
-   */
-
-  state = {
-    isOpen: true
-  }
-  
-  signup = () => {
-    this.props.auth.login()
-  }
-
-  toggleNavbar = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    })
+  componentWillUnmount() {
+    console.log('WillUnmount')
   }
   
   render() {
@@ -81,26 +74,12 @@ class Navigation extends PureComponent { /*({ auth, isLoggedIn, username }) => {
 
         <NavStyled className='nav_wrapper__links_list'>
           <NavItemStyled className='nav_wrapper__links_list__item'>
-          {
-            this.props.isLoggedIn
-            ?
-              <ButtonStyled
-                className='nav_wrapper__links_list__item__logout_btn'
-                onClick={ this.props.auth.logout }>
-                  Log out
-              </ButtonStyled>
-            :
-              <ButtonStyled
-                className='nav_wrapper__links_list__item__login_btn'
-                onClick={ this.signup }>
-                  Enter Limbo
-              </ButtonStyled>
-          }
+          { this.renderLogInLogOutBtn() }
           </NavItemStyled>
         </NavStyled>
       </NavbarStyled>
     )
   }
 }
- 
+
 export default Navigation
