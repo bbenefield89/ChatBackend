@@ -7,7 +7,8 @@ const User = db.define(
   {
     username: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
+      unique: true,
       validate: {
         len: [ 1, 25 ],
         notEmpty: true,
@@ -16,7 +17,7 @@ const User = db.define(
 
     password: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         len: [ 1, 256 ],
         notEmpty: true,
@@ -25,10 +26,19 @@ const User = db.define(
     
     picture: {
       type: Sequelize.STRING,
+      allowNull: true,
       validate: {
         isUrl: true
       }
     },
+  },
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: [ 'username' ]
+      }
+    ]
   }
 )
 
