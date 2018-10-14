@@ -1,5 +1,8 @@
+require('dotenv').config()
+
 import bcrypt     from 'bcrypt'
 import { PubSub } from 'graphql-subscriptions'
+import jwt        from 'jsonwebtoken'
 
 import User    from '../database/models/User'
 import Message from '../database/models/Message'
@@ -8,10 +11,64 @@ const pubsub          = new PubSub();
 const USER_CREATED    = 'userCreated'
 const MESSAGE_CREATED = 'messageCreated'
 
+class Token {
+  constructor(user) {
+    this.user = user
+    this.secret = process.env.SECRET
+  }
+
+  createToken = () => {
+    const tokenData = {
+      id: this.user.id,
+      username: this.user.username,
+      picture: this.user.picture
+    }
+
+    return jwt.sign(tokenData, this.secret, { expiresIn: '30d' })
+  }
+
+  validateToken = token => {
+    return jwt.verify(token, this.secret)
+  }
+}
+
 const resolvers = {
   Query: {
     user: async (root, { id }) => User.findById(id),
     users: async () => User.findAll(),
+    userLogin: async (root, { username, password }) => {
+      /**
+       * TODO: fix the error messaging to be more general
+       */
+      if (!password)
+        throw new Error('SUPPLY A VALID PASSWORD')
+
+      const user = await User.findOne({
+        where: { username}
+      })
+
+      if (!user)
+        throw new Error('USER DOES NOT EXIST')
+
+      const validPw = await bcrypt.compare(password, user.password)
+
+      if (!validPw)
+        throw new Error('PASSWORD DOES NOT MATCH')
+
+      const token = new Token(user)
+      const createToken = token.createToken()
+
+      return { user, jwt: createToken }
+    },
+    authenticateUser: async (root, { token }) => {
+      const verifyJwt = new Token()
+      const tokenValid = await verifyJwt.validateToken(token)
+
+      if (!tokenValid)
+        return false
+
+      return true
+    },
     
     messages: async () => Message.findAll()
   },
@@ -22,11 +79,25 @@ const resolvers = {
       if (!password)
         throw new Error('Password length to short')
       
-      const hashedPw = await bcrypt.hash(password, 10)
-      const newUser  = await User.create({ username, password: hashedPw, picture })
+      try {
+        const hashedPw = await bcrypt.hash(password, 10)
+        const newUser = await User.create(
+          {
+            username,
+            password: hashedPw,
+            picture: picture ? picture : null
+          }
+        )
 
-      pubsub.publish(USER_CREATED, { newUser })
-      return newUser
+        const token = new Token(newUser)
+        const createToken = token.createToken()
+        
+        pubsub.publish(USER_CREATED, { newUser })
+        return { user: newUser, jwt: createToken }
+      }
+      catch (err) {
+        throw new Error(err)
+      }
     },
     
     createMessage: async (root, { username, message }) => {
