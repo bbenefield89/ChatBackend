@@ -29,7 +29,11 @@ const ws = createServer(app, (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', '*')
 })
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers })
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: true
+})
 
 // middleware
 app.use(cors())
