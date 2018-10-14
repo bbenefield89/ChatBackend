@@ -87,7 +87,8 @@ class App extends Component {
     
     this.setState({
       profile: user,
-      isLoggedIn: true
+      isLoggedIn: true,
+      showSignUpModal: 'none'
     })
   }
 
