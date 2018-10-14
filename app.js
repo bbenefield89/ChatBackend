@@ -23,7 +23,7 @@ const app  = express()
  * the callback function pretty much open cors up for everyone
  */
 const ws = createServer(app, (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', `http://localhost:${ PORT }`)
+  res.setHeader('Access-Control-Allow-Origin', [ `http://localhost:${ PORT }`, `https://limbochat.herokuapp.com` ])
   res.setHeader('Access-Control-Request-Method', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
   res.setHeader('Access-Control-Allow-Headers', '*')
