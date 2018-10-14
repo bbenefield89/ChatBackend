@@ -17,7 +17,7 @@ class SignUpModal extends PureComponent {
     
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         query {
@@ -46,7 +46,7 @@ class SignUpModal extends PureComponent {
     
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         mutation {

@@ -54,7 +54,7 @@ class App extends Component {
 
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         query {
@@ -99,6 +99,7 @@ class App extends Component {
         <SignUpModal
           display={ this.state.showSignUpModal }
           setProfileData={ this.setProfileData }
+          url={ this.props.url }
         />
       
         <Route
