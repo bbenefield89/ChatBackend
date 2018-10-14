@@ -8,7 +8,7 @@ class ChatWrapper extends Component {
     return (
       <React.Fragment>
         <ChatMessagesList
-          auth={ this.props.auth }
+          url={ this.props.url }
         />
   
         <ChatForm
