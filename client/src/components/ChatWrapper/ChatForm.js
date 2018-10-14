@@ -1,17 +1,5 @@
 import React, { PureComponent } from 'react'
-// import axios from 'axios'
-import gql from 'graphql-tag'
-import { Mutation } from 'react-apollo'
-
-const CREATE_MESSAGE = gql`
-  mutation ($username: String!, $message: String!) {
-    createMessage (username: $username, message: $message) {
-      id
-      username
-      message
-    }
-  }
-`
+import axios from 'axios'
 
 class ChatInput extends PureComponent {
   constructor(props) {
@@ -21,9 +9,26 @@ class ChatInput extends PureComponent {
     }
   }
 
-  sendMessage = (e, mutation) => {
+  sendMessage = e => {
     e.preventDefault()
-    mutation()
+    
+    const req = {
+      method: 'POST',
+      url: `${ this.props.url }/graphql`,
+      data: {
+        query: `
+        mutation {
+          createMessage (message: "${ this.state.message }", username:"${ this.props.username }") {
+            id
+            message
+            username
+          }
+        }
+        `
+      }
+    }
+
+    axios(req)
   }
 
   setMessageValue = e => {
@@ -33,26 +38,15 @@ class ChatInput extends PureComponent {
 
   render() {
     return (
-      <Mutation
-        mutation={ CREATE_MESSAGE }
-        variables={{ username: this.props.username, message: this.state.message }}
-      >
-        {(createMessage, { loading, error, data }) => {
-          return <form action='' onSubmit={ e => this.sendMessage(e, createMessage) }>
-            <input
-              autoComplete='off'
-              name='message'
-              onChange={ this.setMessageValue }
-              value={ this.state.message }
-            />
-            <button>Send</button>
-              {
-                error ? 'ERROR' : null
-              }
-          </form>
-        }}
-      
-      </Mutation>
+      <form action='' onSubmit={ this.sendMessage }>
+        <input
+          autoComplete='off'
+          name='message'
+          onChange={ this.setMessageValue }
+          value={ this.state.message }
+        />
+        <button>Send</button>
+      </form>
     )
   }
 }

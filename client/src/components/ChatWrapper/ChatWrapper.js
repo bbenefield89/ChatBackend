@@ -12,7 +12,7 @@ class ChatWrapper extends Component {
         />
   
         <ChatForm
-          auth={ this.props.auth }
+          url={ this.props.url }
           username={ this.props.username }
         />
       </React.Fragment>

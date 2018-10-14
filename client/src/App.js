@@ -94,7 +94,6 @@ class App extends Component {
 
   render() {
     return (
-
       <AppStyled className="App">
         <SignUpModal
           display={ this.state.showSignUpModal }
@@ -129,6 +128,8 @@ class App extends Component {
           render={props => (
             <ChatWrapper
               { ...props }
+              username={ this.state.profile.username }
+              url={ this.props.url }
             />
           )}
         />
