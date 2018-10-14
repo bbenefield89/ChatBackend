@@ -1,13 +1,12 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
+import axios from 'axios'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Callback from './components/Callback/Callback'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
 import Home from './components/Home/Home'
 import Navigation from './components/Nav/Nav'
-
-import Auth from './Auth/Auth'
+import SignUpModal from './components/SignUpModal/SignUpModal'
 
 import './App.css'
 // import logo from './logo.svg';
@@ -18,65 +17,99 @@ const AppStyled = styled.div`
   color: #fafafa;
 `
 
-class App extends PureComponent {
+class App extends Component {
   constructor(props) {
     super(props)
     
     this.state = {
       profile: {},
-      isLoggedIn: false
+      isLoggedIn: false,
+      showSignUpModal: 'none'
     }
-
-    this.auth = new Auth()
   }
 
-  isAuthenticated = () => {
-    const isAuthenticated = this.auth.isAuthenticated()
+  handleShowSignUpModal = () => {
+    const token = localStorage.getItem('token')
 
-    console.log(isAuthenticated)
-    if (isAuthenticated) {
-      this.auth.getProfile((err, profile) => {
-        if (err)
-          throw new Error('ERROR GETTING PROFILE')
-
-        if (profile) {
-          console.log(profile)
-          
-          return this.setState({
-            username: profile.nickname,
-            isLoggedIn: true
-          })
-        }
-      })
+    if (token) {
+      this.isUserAuthenticated()
     }
     else {
-      return false
+      const { showSignUpModal } = this.state
+      
+      if (showSignUpModal === 'block') {
+        this.setState({ showSignUpModal: 'none' })
+      }
+      else {
+        this.setState({ showSignUpModal: 'block' })
+      }
     }
   }
 
-  async componentDidMount() {
-    const isAuthenticated = await this.auth.isAuthenticated()
-    
-    if (isAuthenticated) {
-      await this.auth.getProfile((err, profile) => {
-        if (err)
-          throw new Error('ERROR: err IN APP cDM')
+  isUserAuthenticated = async () => {
+    const token = localStorage.getItem('token')
 
-        if (!profile)
-          throw new Error('ERROR GETTING profile IN APP cDM')
-        else
-          this.setState({ profile, isLoggedIn: true })
-      })
+    if (!token)
+      return this.setState({ isLoggedIn: false }, () => console.log('false'))
+
+    const req = {
+      method: 'POST',
+      url: 'http://localhost:3001/graphql',
+      data: {
+        query: `
+        query {
+          authenticateUser (token: "${ token }")
+        }
+        `
+      }
     }
+
+    const { data } = await axios(req)
+    const { authenticateUser } = data.data
+
+    if (authenticateUser)
+      this.setState({ isLoggedIn: true }, () => console.log('true'))
+  }
+
+  handleLogout = history => {
+    localStorage.clear()
+
+    this.setState({
+      profile: {},
+      isLoggedIn: false
+    },
+      () => history.push('/')
+    )
+  }
+  
+  setProfileData = (token, user) => {
+    localStorage.setItem('token', token)
+    
+    this.setState({
+      profile: user,
+      isLoggedIn: true
+    })
   }
 
   render() {
     return (
+
       <AppStyled className="App">
-        <Navigation
-          auth={ this.auth }
-          isLoggedIn={ this.state.isLoggedIn }
-          username={ this.state.profile.nickname }
+        <SignUpModal
+          display={ this.state.showSignUpModal }
+          setProfileData={ this.setProfileData }
+        />
+      
+        <Route
+          path='/'
+          render={props => (
+            <Navigation
+              { ...props }
+              handleShowSignUpModal={ this.handleShowSignUpModal }
+              isLoggedIn={ this.state.isLoggedIn }
+              handleLogout={ this.handleLogout }
+            />
+          )}
         />
       
         <Route
@@ -84,19 +117,7 @@ class App extends PureComponent {
           render={props => (
             <Home
               { ...props }
-              auth={ this.auth }
-              isAuthenticated={ this.isAuthenticated }
               isLoggedIn={ this.state.isLoggedIn }
-            />
-          )}
-        />
-
-        <Route
-          path='/auth'
-          render={props => (
-            <Callback
-              { ...props }
-              auth={ this.auth }
             />
           )}
         />
@@ -106,9 +127,6 @@ class App extends PureComponent {
           render={props => (
             <ChatWrapper
               { ...props }
-              auth={ this.auth }
-              isAuthenticated={ this.isAuthenticated }
-              username={ this.state.profile.nickname }
             />
           )}
         />

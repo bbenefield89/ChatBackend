@@ -31,11 +31,16 @@ const ws = createServer(app, (req, res) => {
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
+// middleware
 app.use(cors())
 app.use(express.static('./client/build'))
 
 // allows express to serve the '/graphql' endpoint/graphiql-playground
 apolloServer.applyMiddleware({ app })
+
+app.get('*', (req, res) => (
+  res.sendFile('index.html', { root: __dirname + '/client/build' }))
+)
 
 /**
  * this portion is pretty special

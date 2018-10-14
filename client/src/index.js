@@ -14,15 +14,17 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.css';
 
+const url = process.env.NODE_ENV === 'production' ? 'https://limbochat.herokuapp.com' : 'http://localhost:3001'
+
 /**
  * TODO: set up env variables to pass the correct URI
  */
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3001/graphql'
+  uri: url + '/graphql'
 });
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3001/graphql',
+  uri: process.env.NODE_ENV === 'production' ? 'ws://limbochat.herokuapp.com/graphql' : 'ws://localhost:3001/graphql',
   options: {
     reconnect: true
   }
