@@ -1,0 +1,2 @@
+export const url = process.env.NODE_ENV === 'production' ? 'https://limbochat.herokuapp.com' : 'http://localhost:3001'
+export const ws = process.env.NODE_ENV === 'production' ? 'wss://limbochat.herokuapp.com' : 'ws://localhost:3001'

@@ -14,7 +14,7 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.css'
 import './index.css';
 
-const url = process.env.NODE_ENV === 'production' ? 'https://limbochat.herokuapp.com' : 'http://localhost:3001'
+import { url, ws } from './config'
 
 /**
  * TODO: set up env variables to pass the correct URI
@@ -24,7 +24,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new WebSocketLink({
-  uri: process.env.NODE_ENV === 'production' ? 'ws://limbochat.herokuapp.com/graphql' : 'ws://localhost:3001/graphql',
+  uri: `${ ws }/graphql`,
   options: {
     reconnect: true
   }
@@ -52,7 +52,7 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={ client }>
     <BrowserRouter>
-      <App />
+      <App url={ url } ws={ ws } />
     </BrowserRouter>
   </ApolloProvider>,
   document.getElementById('root')

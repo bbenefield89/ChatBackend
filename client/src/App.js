@@ -54,7 +54,7 @@ class App extends Component {
 
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         query {
@@ -87,17 +87,18 @@ class App extends Component {
     
     this.setState({
       profile: user,
-      isLoggedIn: true
+      isLoggedIn: true,
+      showSignUpModal: 'none'
     })
   }
 
   render() {
     return (
-
       <AppStyled className="App">
         <SignUpModal
           display={ this.state.showSignUpModal }
           setProfileData={ this.setProfileData }
+          url={ this.props.url }
         />
       
         <Route
@@ -127,6 +128,8 @@ class App extends Component {
           render={props => (
             <ChatWrapper
               { ...props }
+              username={ this.state.profile.username }
+              url={ this.props.url }
             />
           )}
         />

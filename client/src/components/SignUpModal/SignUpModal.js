@@ -12,26 +12,12 @@ class SignUpModal extends PureComponent {
     this.setState({ showSignupForm: !this.state.showSignupForm })
   }
   
-  submitSignUpForm = async (e, mutation) => {
-    e.preventDefault()
-
-    try {
-      const { data: { createUser } } = await mutation()
-
-      localStorage.setItem('token', createUser.jwt)
-      this.props.setProfileData(createUser.user)
-    }
-    catch(err) {
-      console.log(err)
-    }
-  }
-
   handleUserLogin = async (e, { username, password }) => {
     e.preventDefault()
     
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         query {
@@ -60,7 +46,7 @@ class SignUpModal extends PureComponent {
     
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         mutation {
@@ -78,9 +64,10 @@ class SignUpModal extends PureComponent {
       }
     }
 
-    const data = await axios(req)
+    const { data } = await axios(req)
+    const { jwt, user } = data.data.createUser
 
-    console.log(data)
+    this.props.setProfileData(jwt, user)
   }
 
   componentWillUnmount() {

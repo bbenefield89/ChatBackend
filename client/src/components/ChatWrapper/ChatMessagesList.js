@@ -64,7 +64,7 @@ class ChatMessagesList extends PureComponent {
   async componentDidMount() {
     const req = {
       method: 'POST',
-      url: 'http://localhost:3001/graphql',
+      url: `${ this.props.url }/graphql`,
       data: { query: MESSAGES }
     }
 
