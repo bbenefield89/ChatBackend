@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
 
+import ChatUsersContainer from './components/ChatUsers/ChatUsersContainer'
 import ChatWrapper from './components/ChatWrapper/ChatWrapper'
 import Home from './components/Home/Home'
 import Navigation from './components/Nav/Nav'
@@ -126,11 +127,15 @@ class App extends Component {
         <Route
           path='/chat'
           render={props => (
-            <ChatWrapper
-              { ...props }
-              username={ this.state.profile.username }
-              url={ this.props.url }
-            />
+            <React.Fragment>
+              <ChatWrapper
+                { ...props }
+                username={ this.state.profile.username }
+                url={ this.props.url }
+              />
+
+              <ChatUsersContainer client={ this.props.client } profile={ this.state.profile } />
+            </React.Fragment>
           )}
         />
       </AppStyled>
