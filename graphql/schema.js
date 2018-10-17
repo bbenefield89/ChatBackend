@@ -33,10 +33,12 @@ const typeDefs = `
   type Mutation {
     createUser(username: String!, password: String!, picture: String): UserPayload
     createMessage(username: String!, message: String!): Message
+    userList(token: String, id: ID): [ User ]
   }
 
   type Subscription {
     newUser: User
+    userList: [ User ]
     newMessage: Message
   }
 `;

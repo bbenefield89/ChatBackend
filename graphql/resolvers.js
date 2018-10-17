@@ -1,3 +1,7 @@
+/**
+ * TODO: finish creating the 'userLeft' resolver
+ */
+
 require('dotenv').config()
 
 import bcrypt     from 'bcrypt'
@@ -7,10 +11,19 @@ import jwt        from 'jsonwebtoken'
 import User    from '../database/models/User'
 import Message from '../database/models/Message'
 
-const pubsub          = new PubSub();
+import userList from './mutations/usersList'
+
+const pubsub = new PubSub();
+
 const USER_CREATED    = 'userCreated'
+const USER_LIST       = 'userList'
 const MESSAGE_CREATED = 'messageCreated'
 
+// const currentUsers = []
+
+/**
+ * TODO: move this class into its own file
+ */
 class Token {
   constructor(user) {
     this.user = user
@@ -99,6 +112,7 @@ const resolvers = {
         throw new Error(err)
       }
     },
+    userList: async (root, args) => userList(args, pubsub),
     
     createMessage: async (root, { username, message }) => {
       const newMessage = await Message.create({ username, message })
@@ -114,7 +128,11 @@ const resolvers = {
     
     newMessage: {
       subscribe: () => pubsub.asyncIterator(MESSAGE_CREATED)
-    }
+    },
+
+    userList: {
+      subscribe: () => pubsub.asyncIterator(USER_LIST)
+    },
   }
 };
 
