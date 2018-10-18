@@ -70,10 +70,6 @@ class SignUpModal extends PureComponent {
     this.props.setProfileData(jwt, user)
   }
 
-  componentWillUnmount() {
-    console.log('WillUnMount -- SignupModal')
-  }
-
   render() {
     return (
       <div style={{ display: this.props.display }}>
@@ -89,19 +85,6 @@ class SignUpModal extends PureComponent {
                 onSubmit={ this.handleUserLogin }
                 submitValue='Log in'
               />
-            
-              // <Query
-              //   query={ USER_LOGIN }
-              //   variables={{ username: this.state.username, password: this.state.password }}
-              // >
-              //   {({ loading, error, data }) => {
-              //     if (loading) console.log(loading)
-              //     if (error) console.log(error)
-              //     if (data) console.log(data)
-
-              //     return <button>LOG IN FORM</button>
-              //   }}
-              // </Query>
         }
       
         <button
