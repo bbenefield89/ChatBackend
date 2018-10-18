@@ -33,7 +33,7 @@ class App extends Component {
     const token = localStorage.getItem('token')
 
     if (token) {
-      this.isUserAuthenticated()
+      this.handleUserAuthentication(token)
     }
     else {
       const { showSignUpModal } = this.state
@@ -47,29 +47,30 @@ class App extends Component {
     }
   }
 
-  isUserAuthenticated = async () => {
-    const token = localStorage.getItem('token')
-
+  handleUserAuthentication = async token => {
     if (!token)
-      return this.setState({ isLoggedIn: false }, () => console.log('false'))
-
+      this.setState({ isLoggedIn: false, profile: {} })
+    
     const req = {
       method: 'POST',
       url: `${ this.props.url }/graphql`,
       data: {
         query: `
-        query {
-          authenticateUser (token: "${ token }")
-        }
+          query {
+            authenticateUser (token: "${ token }") {
+              id
+              username
+              picture
+            }
+          }
         `
       }
     }
 
     const { data } = await axios(req)
-    const { authenticateUser } = data.data
-
-    if (authenticateUser)
-      this.setState({ isLoggedIn: true }, () => console.log('true'))
+    const user = data.data.authenticateUser
+    
+    this.setProfileData(token, user)
   }
 
   handleLogout = history => {
