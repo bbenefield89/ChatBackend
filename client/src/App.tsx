@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import axios from 'axios'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
@@ -19,8 +20,24 @@ const AppStyled = styled.div`
 `
 
 
-class App extends Component {
-  constructor(props) {
+interface Props {
+  client: object;
+  url: string;
+  ws: string;
+}
+
+interface State {
+  isLoggedIn: boolean;
+  profile: any;
+  showSignUpModal: string;
+}
+
+interface History {
+  push: any;
+}
+
+class App extends Component<Props, State> {
+  constructor(props: Props) {
     super(props)
     
     this.state = {
@@ -30,7 +47,46 @@ class App extends Component {
     }
   }
 
-  handleShowSignUpModal = () => {
+  public render() {
+    return (
+      <AppStyled className="App">
+        <SignUpModal
+          display={ this.state.showSignUpModal }
+          setProfileData={ this.setProfileData }
+          url={ this.props.url }
+        />
+      
+        <Route
+          path='/'
+          render={ this.renderNavigation }
+        />
+      
+        <Route
+          exact={ true }
+          path='/'
+          render={ this.renderHome }
+        />
+
+        <Route
+          path='/chat'
+          render={ this.renderMainChat }
+        />
+      </AppStyled>
+    );
+  }
+
+  protected handleLogout = (history: History) => {
+    localStorage.clear()
+
+    this.setState({
+      isLoggedIn: false,
+      profile: {}
+    },
+      () => history.push('/')
+    )
+  }
+
+  protected handleShowSignUpModal = () => {
     const token = localStorage.getItem('token')
 
     if (token) {
@@ -48,7 +104,18 @@ class App extends Component {
     }
   }
 
-  isUserAuthenticated = async () => {
+  
+  protected setProfileData = (token: string, user: object) => {
+    localStorage.setItem('token', token)
+    
+    this.setState({
+      isLoggedIn: true,
+      profile: user,
+      showSignUpModal: 'none'
+    })
+  }
+
+  private isUserAuthenticated = async () => {
     const token = localStorage.getItem('token')
 
     if (!token) {
@@ -75,76 +142,34 @@ class App extends Component {
     }
   }
 
-  handleLogout = history => {
-    localStorage.clear()
-
-    this.setState({
-      isLoggedIn: false,
-      profile: {}
-    },
-      () => history.push('/')
-    )
-  }
+  private renderHome = (props: object) => (
+    <Home
+      { ...props }
+      isLoggedIn={ this.state.isLoggedIn }
+    />
+  )
   
-  setProfileData = (token, user) => {
-    localStorage.setItem('token', token)
-    
-    throw new Error('woo')
-    
-    this.setState({
-      isLoggedIn: true,
-      profile: user,
-      showSignUpModal: 'none'
-    })
-  }
+  private renderMainChat = (props: object) => (
+    <React.Fragment>
+      <ChatWrapper
+        { ...props }
+        username={ this.state.profile.username }
+        url={ this.props.url }
+      />
 
-  render() {
+      <ChatUsersContainer client={ this.props.client } profile={ this.state.profile } />
+    </React.Fragment>
+  )
+  
+  private renderNavigation = (props: object) => {
     return (
-      <AppStyled className="App">
-        <SignUpModal
-          display={ this.state.showSignUpModal }
-          setProfileData={ this.setProfileData }
-          url={ this.props.url }
-        />
-      
-        <Route
-          path='/'
-          render={props => (
-            <Navigation
-              { ...props }
-              handleShowSignUpModal={ this.handleShowSignUpModal }
-              isLoggedIn={ this.state.isLoggedIn }
-              handleLogout={ this.handleLogout }
-            />
-          )}
-        />
-      
-        <Route
-          exact path='/'
-          render={props => (
-            <Home
-              { ...props }
-              isLoggedIn={ this.state.isLoggedIn }
-            />
-          )}
-        />
-
-        <Route
-          path='/chat'
-          render={props => (
-            <React.Fragment>
-              <ChatWrapper
-                { ...props }
-                username={ this.state.profile.username }
-                url={ this.props.url }
-              />
-
-              <ChatUsersContainer client={ this.props.client } profile={ this.state.profile } />
-            </React.Fragment>
-          )}
-        />
-      </AppStyled>
-    );
+      <Navigation
+        { ...props }
+        handleShowSignUpModal={ this.handleShowSignUpModal }
+        isLoggedIn={ this.state.isLoggedIn }
+        handleLogout={ this.handleLogout }
+      />
+    )
   }
 }
 
