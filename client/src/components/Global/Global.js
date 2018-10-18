@@ -27,10 +27,11 @@ class Global extends Component {
   setSocketURL = () => {
     const { NODE_ENV } = process.env
 
-    if (NODE_ENV === 'production')
+    if (NODE_ENV === 'production') {
       this.setState({
         socketURL: 'https://evening-headland-92725.herokuapp.com/'
       })
+    }
   }
 
   componentDidMount() {
@@ -41,9 +42,9 @@ class Global extends Component {
     return (
       <Store.Provider
         value={{
-          state: this.state,
+          auth: this.auth,
           socket: this.socket,
-          auth: this.auth
+          state: this.state
         }}
       >
         <ApolloProvider client={ this.client }>

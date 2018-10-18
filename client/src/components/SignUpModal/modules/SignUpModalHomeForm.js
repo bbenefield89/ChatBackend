@@ -4,9 +4,9 @@ class SignUpModalHomeForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       password: '',
-      picture: ''
+      picture: '',
+      username: ''
     }
   }
 

@@ -41,8 +41,6 @@ class ChatUsersContainer extends Component {
     const token = localStorage.getItem('token')
 
     const req = {
-      method: 'POST',
-      url: 'http://localhost:3001/graphql',
       data: {
         query: `
           mutation {
@@ -53,7 +51,9 @@ class ChatUsersContainer extends Component {
             }
           }
         `
-      }
+      },
+      method: 'POST',
+      url: 'http://localhost:3001/graphql'
     }
 
     await axios(req)
@@ -65,11 +65,11 @@ class ChatUsersContainer extends Component {
 
   async componentWillUnmount() {
     const req = {
-      method: 'POST',
-      url: 'http://localhost:3001/graphql',
       data: {
         query: USER_LEFT(this.state.profile.id)
-      }
+      },
+      method: 'POST',
+      url: 'http://localhost:3001/graphql'
     }
 
     const { data } = await axios(req)
@@ -80,7 +80,6 @@ class ChatUsersContainer extends Component {
       <Subscription
         subscription={ USER_LIST }
         onSubscriptionData={({ subscriptionData }) => {
-          console.log(subscriptionData.data.userList)
           this.updateUserList(subscriptionData)
         }}
       >
@@ -90,7 +89,6 @@ class ChatUsersContainer extends Component {
           }
           
           if (error) {
-            console.log(error)
             return <h1 style={{ color: 'red' }}>ERROR</h1>
           }
 

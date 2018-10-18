@@ -59,10 +59,6 @@ class Navigation extends Component {
       </NavButton>
   )
 
-  componentWillUnmount() {
-    console.log('WillUnmount')
-  }
-  
   render() {
     return (
       <NavbarStyled className='nav_wrapper'>

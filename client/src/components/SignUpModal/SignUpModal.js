@@ -16,8 +16,6 @@ class SignUpModal extends PureComponent {
     e.preventDefault()
     
     const req = {
-      method: 'POST',
-      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         query {
@@ -32,7 +30,9 @@ class SignUpModal extends PureComponent {
           }
         }
         `
-      }
+      },
+      method: 'POST',
+      url: `${ this.props.url }/graphql`
     }
 
     const { data } = await axios(req)
@@ -45,8 +45,6 @@ class SignUpModal extends PureComponent {
     e.preventDefault()
     
     const req = {
-      method: 'POST',
-      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         mutation {
@@ -61,17 +59,15 @@ class SignUpModal extends PureComponent {
           }
         }
         `
-      }
+      },
+      method: 'POST',
+      url: `${ this.props.url }/graphql`
     }
 
     const { data } = await axios(req)
     const { jwt, user } = data.data.createUser
 
     this.props.setProfileData(jwt, user)
-  }
-
-  componentWillUnmount() {
-    console.log('WillUnMount -- SignupModal')
   }
 
   render() {

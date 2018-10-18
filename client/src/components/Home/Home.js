@@ -35,8 +35,9 @@ const CTABtnStyled = styled.button`
 class Home extends Component {
 
   componentDidUpdate() {
-    if (this.props.isLoggedIn)
+    if (this.props.isLoggedIn) {
       this.props.history.push('/chat')
+    }
   }
   
   // render

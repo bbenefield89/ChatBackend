@@ -13,8 +13,6 @@ class ChatInput extends PureComponent {
     e.preventDefault()
     
     const req = {
-      method: 'POST',
-      url: `${ this.props.url }/graphql`,
       data: {
         query: `
         mutation {
@@ -25,7 +23,9 @@ class ChatInput extends PureComponent {
           }
         }
         `
-      }
+      },
+      method: 'POST',
+      url: `${ this.props.url }/graphql`
     }
 
     axios(req)

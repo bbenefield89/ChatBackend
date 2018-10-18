@@ -63,9 +63,9 @@ class ChatMessagesList extends PureComponent {
 
   async componentDidMount() {
     const req = {
+      data: { query: MESSAGES },
       method: 'POST',
-      url: `${ this.props.url }/graphql`,
-      data: { query: MESSAGES }
+      url: `${ this.props.url }/graphql`
     }
 
     try {
@@ -73,7 +73,7 @@ class ChatMessagesList extends PureComponent {
       this.setMessagesState(data.data.messages)
     }
     catch(err) {
-      console.log(err)
+      throw new Error(err)
     }
   }
 

@@ -1,0 +1,18 @@
+{
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "rules": {
+    "no-console": [true, "log", "error"],
+    "interface-name": [true, "never-prefix"]
+  },
+  "jsRules": {
+    "no-console": [true, "log", "error"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js",
+      "Auth/*.js"
+    ]
+  }
+}
