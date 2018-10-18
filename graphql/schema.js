@@ -24,7 +24,7 @@ const typeDefs = `
     users: [ User ]!
     user(id: ID!): User
     userLogin(username: String!, password: String!): UserPayload
-    authenticateUser(token: String!): Boolean!
+    authenticateUser(token: String!): User
 
     messages: [ Message ]!
     message: Message

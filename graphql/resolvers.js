@@ -78,9 +78,11 @@ const resolvers = {
       const tokenValid = await verifyJwt.validateToken(token)
 
       if (!tokenValid)
-        return false
+        throw new Error('INVALID TOKEN')
 
-      return true
+      const user = await User.findById(tokenValid.id)
+
+      return user
     },
     
     messages: async () => Message.findAll()
