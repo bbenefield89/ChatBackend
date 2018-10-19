@@ -21,15 +21,15 @@ const AppStyled = styled.div`
 
 
 interface Props {
-  client: object;
-  url: string;
-  ws: string;
+  client: object
+  url: string
+  ws: string
 }
 
 interface State {
-  isLoggedIn: boolean;
-  profile: any;
-  showSignUpModal: string;
+  isLoggedIn: boolean
+  profile: any
+  showSignUpModal: string
 }
 
 interface History {
