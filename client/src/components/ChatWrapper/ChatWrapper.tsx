@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 import ChatForm from './ChatForm'
 import ChatMessagesList from './ChatMessagesList'
 
-class ChatWrapper extends Component {
-  render() {
+class ChatWrapper extends Component<any> {
+  public render(): any {
     return (
       <React.Fragment>
         <ChatMessagesList
