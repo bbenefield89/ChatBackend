@@ -6,7 +6,8 @@
  *       received from the <Subscription /> component 
  */
 
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
+
 import axios from 'axios'
 import gql from 'graphql-tag'
 import { Subscription } from 'react-apollo'
@@ -33,35 +34,19 @@ const NEW_MESSAGE = gql`
   }
 `
 
-class ChatMessagesList extends PureComponent {
-  constructor(props) {
+interface SubScriptionData {
+  subscriptionData: any
+}
+
+class ChatMessagesList extends Component<any, any> {
+  constructor(props: any) {
     super(props)
     this.state = {
       messages: []
     }
   }
   
-  setMessagesState = messagesData => {
-    this.setState({
-      messages: [
-        ...this.state.messages,
-        ...messagesData
-      ]
-    })
-  }
-
-  newMessageReturned = messageData => {
-    const { newMessage } = messageData.data
-    
-    this.setState({
-      messages: [
-        ...this.state.messages,
-        newMessage
-      ]
-    })
-  }
-
-  async componentDidMount() {
+  public async componentDidMount() {
     const req = {
       data: { query: MESSAGES },
       method: 'POST',
@@ -77,13 +62,11 @@ class ChatMessagesList extends PureComponent {
     }
   }
 
-  render() {
+  public render() {
     return (
       <Subscription
         subscription={ NEW_MESSAGE }
-        onSubscriptionData={({ subscriptionData }) => (
-          this.newMessageReturned(subscriptionData) 
-        )}
+        onSubscriptionData={ this.handleSubscriptionData }
       >
         {({loading, error, data}) => {
           return (
@@ -104,6 +87,30 @@ class ChatMessagesList extends PureComponent {
         }}
       </Subscription>
     )
+  }
+
+  private handleSubscriptionData = ({ subscriptionData }: SubScriptionData): void => {
+    this.newMessageReturned(subscriptionData)
+  }
+  
+  private setMessagesState = (messagesData: any): void => {
+    this.setState({
+      messages: [
+        ...this.state.messages,
+        ...messagesData
+      ]
+    })
+  }
+
+  private newMessageReturned = (messageData: any): void => {
+    const { newMessage } = messageData.data
+    
+    this.setState({
+      messages: [
+        ...this.state.messages,
+        newMessage
+      ]
+    })
   }
 }
  
