@@ -26,17 +26,7 @@ interface Props {
   ws: string
 }
 
-interface State {
-  isLoggedIn: boolean
-  profile: any
-  showSignUpModal: string
-}
-
-interface History {
-  push: any;
-}
-
-class App extends Component<Props, State> {
+class App extends Component<any, any> {
   constructor(props: Props) {
     super(props)
     
@@ -75,7 +65,7 @@ class App extends Component<Props, State> {
     );
   }
 
-  protected handleLogout = (history: History) => {
+  protected handleLogout = (history: any) => {
     localStorage.clear()
 
     this.setState({
