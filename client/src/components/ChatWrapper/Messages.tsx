@@ -2,9 +2,13 @@ import React from 'react'
 
 import Message from './Message'
 
-const Messages = ({ messages }) => {
+interface Props {
+  messages: any
+}
+
+const Messages = ({ messages }: Props) => {
   return (
-    messages.map(message => (
+    messages.map((message: any) => (
       <Message
         { ...message }
         key={ message.id }
