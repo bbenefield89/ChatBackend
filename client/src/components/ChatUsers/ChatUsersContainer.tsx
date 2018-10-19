@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import axios from 'axios'
 import gql from 'graphql-tag'
 import { Subscription } from 'react-apollo'
@@ -15,7 +16,7 @@ const USER_LIST = gql`
   }
 `
 
-const USER_LEFT = id => `
+const USER_LEFT = (id: string) => `
   mutation {
     userList (id: "${ id }") {
       id
@@ -25,19 +26,17 @@ const USER_LEFT = id => `
   }
 `
 
-class ChatUsersContainer extends Component {
-  state = {
-    profile: {},
-    usersList: []
+class ChatUsersContainer extends Component<any, any> {
+  constructor(props: any) {
+    super(props)
+
+    this.state = {
+      profile: {},
+      usersList: []
+    }
   }
   
-  updateUserList = ({ data }) => {
-    return this.setState({
-      usersList: [ ...data.userList ]
-    })
-  }
-  
-  async componentDidMount() {
+  public async componentDidMount() {
     const token = localStorage.getItem('token')
 
     const req = {
@@ -63,27 +62,13 @@ class ChatUsersContainer extends Component {
     })
   }
 
-  async componentWillUnmount() {
-    const req = {
-      data: {
-        query: USER_LEFT(this.state.profile.id)
-      },
-      method: 'POST',
-      url: 'http://localhost:3001/graphql'
-    }
-
-    const { data } = await axios(req)
-  }
-
-  render() {
+  public render() {
     return (
       <Subscription
         subscription={ USER_LIST }
-        onSubscriptionData={({ subscriptionData }) => {
-          this.updateUserList(subscriptionData)
-        }}
+        onSubscriptionData={ this.handleSubScriptionData }
       >
-        {({ loading, error, data }) => {
+        {({ loading, error, data }): any => {
           if (loading) {
             return <h1 style={{color: 'green'}}>LOADING</h1>
           }
@@ -98,6 +83,28 @@ class ChatUsersContainer extends Component {
         }}
       </Subscription>
     )
+  }
+
+  public async componentWillUnmount() {
+    const req = {
+      data: {
+        query: USER_LEFT(this.state.profile.id)
+      },
+      method: 'POST',
+      url: 'http://localhost:3001/graphql'
+    }
+
+    await axios(req)
+  }
+
+  private handleSubScriptionData = ({ subscriptionData }: { subscriptionData: any }): void => {
+    this.updateUserList(subscriptionData)
+  }
+
+  private updateUserList = (data: any): any => {
+    return this.setState({
+      usersList: [ ...data.data.userList ]
+    })
   }
 }
  

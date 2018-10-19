@@ -1,6 +1,11 @@
 import React from 'react'
 
-const Message = ({ message, username }) => {
+interface Props {
+  username: string
+  message: any
+}
+
+const Message = ({ message, username }: Props) => {
   return (
     <React.Fragment>
       <p style={{color: 'blue'}}>{ username }</p>
