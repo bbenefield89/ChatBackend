@@ -60,7 +60,12 @@ const SvgStyled = styled.img`
   }
 `
 
-const Incentive = ({ incentiveHeaderText, incentiveImg }) => {
+interface IncentiveData {
+  incentiveHeaderText: string
+  incentiveImg: string
+}
+
+const Incentive = ({ incentiveHeaderText, incentiveImg }: IncentiveData) => {
   return (
     <DivStyled>
       <IncentiveContainerStyled className='home_container__row__column'>
@@ -70,7 +75,9 @@ const Incentive = ({ incentiveHeaderText, incentiveImg }) => {
           </IncentiveHeaderStyled>
         </IncentiveHeaderContainerStyled>
         
-        <SvgContainerStyled className='home_container__row__column__svg_container'>
+        <SvgContainerStyled
+          className='home_container__row__column__svg_container'
+        >
           <SvgStyled src={ incentiveImg } />
         </SvgContainerStyled>
       </IncentiveContainerStyled>
