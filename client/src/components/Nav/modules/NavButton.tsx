@@ -12,7 +12,13 @@ const ButtonStyled = styled.button`
   width: 100%;
 `
 
-const NavButton = props => {
+interface Props {
+  children: any
+  className: string
+  onClick(): void
+}
+
+const NavButton = (props: Props) => {
   return (
     <ButtonStyled
       className={ props.className }
