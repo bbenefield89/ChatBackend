@@ -80,7 +80,7 @@ class App extends Component<any, any> {
     const token = localStorage.getItem('token')
 
     if (token) {
-      this.isUserAuthenticated()
+      this.isUserAuthenticated(token)
     }
     else {
       const { showSignUpModal } = this.state
@@ -95,8 +95,10 @@ class App extends Component<any, any> {
   }
 
   
-  protected setProfileData = (token: string, user: object) => {
-    localStorage.setItem('token', token)
+  protected setProfileData = (user: object, token?: string) => {
+    if (token) {
+      localStorage.setItem('token', token)
+    }
     
     this.setState({
       isLoggedIn: true,
@@ -105,9 +107,7 @@ class App extends Component<any, any> {
     })
   }
 
-  private isUserAuthenticated = async () => {
-    const token = localStorage.getItem('token')
-
+  private isUserAuthenticated = async (token: string) => {
     if (!token) {
       return this.setState({ isLoggedIn: false })
     }
@@ -116,7 +116,11 @@ class App extends Component<any, any> {
       data: {
         query: `
         query {
-          authenticateUser (token: "${ token }")
+          authenticateUser (token: "${ token }") {
+            id
+            username
+            picture
+          }
         }
         `
       },
@@ -125,10 +129,12 @@ class App extends Component<any, any> {
     }
 
     const { data } = await axios(req)
-    const { authenticateUser } = data.data
 
-    if (authenticateUser) {
-      this.setState({ isLoggedIn: true })
+    if (data.data.authenticateUser) {
+      this.setState({
+        isLoggedIn: true,
+        profile: data.data.authenticateUser
+      })
     }
   }
 
