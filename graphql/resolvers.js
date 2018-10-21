@@ -19,8 +19,6 @@ const USER_CREATED    = 'userCreated'
 const USER_LIST       = 'userList'
 const MESSAGE_CREATED = 'messageCreated'
 
-// const currentUsers = []
-
 /**
  * TODO: move this class into its own file
  */
@@ -75,12 +73,13 @@ const resolvers = {
     },
     authenticateUser: async (root, { token }) => {
       const verifyJwt = new Token()
-      const tokenValid = await verifyJwt.validateToken(token)
+      const validToken = await verifyJwt.validateToken(token)
 
-      if (!tokenValid)
-        return false
+      if (!validToken)
+        throw new Error('INVALID TOKEN')
 
-      return true
+      const user = await User.findById(validToken.id)
+      return user
     },
     
     messages: async () => Message.findAll()
