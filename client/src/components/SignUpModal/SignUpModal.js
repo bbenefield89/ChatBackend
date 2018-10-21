@@ -38,7 +38,7 @@ class SignUpModal extends PureComponent {
     const { data } = await axios(req)
     const { jwt, user } = data.data.userLogin
 
-    this.props.setProfileData(jwt, user)
+    this.props.setProfileData(user, jwt)
   }
 
   handleUserSignup = async (e, { username, password, picture }) => {
