@@ -24,6 +24,7 @@ class SignUpModalHomeForm extends Component {
           value={ this.state.username }
           name='username'
           onChange={ this.handleInputVal }
+          placeholder={ this.props.usernamePlaceholder }
         />
 
         <label htmlFor='password' />
@@ -32,12 +33,18 @@ class SignUpModalHomeForm extends Component {
           value={ this.state.password }
           name='password'
           onChange={ this.handleInputVal }
+          placeholder={ this.props.passwordPlaceholder }
         />
 
         <input type='submit' value={ this.props.submitValue } />
       </form>
     )
   }
+}
+
+SignUpModalHomeForm.defaultProps = {
+  passwordPlaceholder: 'Password',
+  usernamePlaceholder: 'Username'
 }
  
 export default SignUpModalHomeForm
