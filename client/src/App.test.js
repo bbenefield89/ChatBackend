@@ -47,12 +47,11 @@ afterEach(cleanup)
 
 describe('<App />', () => {
   it('renders without crashing', () => {
-    const app = render(
+    render(
       <ApolloProvider client={ client }>
         <BrowserRouter>
           <App url={ url } ws={ ws } client={ client } />
         </BrowserRouter>
       </ApolloProvider>
-    )
   })
 })

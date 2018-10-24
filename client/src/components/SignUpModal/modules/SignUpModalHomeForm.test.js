@@ -7,8 +7,8 @@ describe('<SignUpModalHomeForm />', () => {
   it('should return a new user', () => {
     const user = {
       id: 1,
-      username: 'User A',
-      picture: ''
+      picture: '',
+      username: 'User A'
     }
 
     const onSubmit = jest.fn(() => user)
