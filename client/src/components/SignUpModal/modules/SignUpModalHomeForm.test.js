@@ -52,5 +52,7 @@ describe('<SignUpModalHomeForm />', () => {
     expect(onSubmit).toHaveBeenCalledTimes(1)
     expect(onSubmit.mock.calls[0][1]).toEqual(userParam)
     expect(onSubmit()).toBe(user)
+
+    cleanup()
   })
 })
