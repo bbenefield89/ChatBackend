@@ -1,4 +1,10 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
+
+const DivStyled = styled.div`
+  position: absolute;
+  right: -108px;
+`
 
 interface User {
   id: string
@@ -16,11 +22,12 @@ class ChatUsersList extends Component<any, any> {
   }
 
   public render() { 
-    // console.log(this.props)
     return (
-      this.props.usersList.map(({ id, username, picture }: User, ind: number) => {
-        return <p key={ ind } style={{ color: 'red' }}>{ username }</p>
-      })
+      <DivStyled className='chat_users_list_container'>
+        {this.props.usersList.map(({ id, username, picture }: User, ind: number) => {
+          return <p key={ ind } style={{ color: 'red' }}>{ username }</p>
+        })}
+      </DivStyled>
     )
   }
 }

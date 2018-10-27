@@ -53,5 +53,6 @@ describe('<App />', () => {
           <App url={ url } ws={ ws } client={ client } />
         </BrowserRouter>
       </ApolloProvider>
+    )
   })
 })

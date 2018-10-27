@@ -1,6 +1,18 @@
 import React, { PureComponent } from 'react'
+import styled from 'styled-components'
 
 import axios from 'axios'
+
+const FormStyled = styled.form`
+  display: flex;
+  padding: 0 1rem 2rem 1rem;
+`
+
+const InputStyled = styled.input`
+  flex: 1;
+  font-size: 16px;
+  padding: 0 10px;
+`
 
 class ChatInput extends PureComponent<any, any> {
   constructor(props: any) {
@@ -12,15 +24,15 @@ class ChatInput extends PureComponent<any, any> {
 
   public render() {
     return (
-      <form action='' onSubmit={ this.sendMessage }>
-        <input
+      <FormStyled action='' onSubmit={ this.sendMessage }>
+        <InputStyled
           autoComplete='off'
           name='message'
           onChange={ this.setMessageValue }
           value={ this.state.message }
         />
         <button>Send</button>
-      </form>
+      </FormStyled>
     )
   }
   

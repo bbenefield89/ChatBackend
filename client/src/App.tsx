@@ -19,6 +19,12 @@ const AppStyled = styled.div`
   color: #fafafa;
 `
 
+const DivStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 158px);
+`
+
 
 interface Props {
   client: object
@@ -146,7 +152,7 @@ class App extends Component<any, any> {
   )
   
   private renderMainChat = (props: object) => (
-    <React.Fragment>
+    <DivStyled className='chat_wrapper'>
       <ChatWrapper
         { ...props }
         username={ this.state.profile.username }
@@ -154,7 +160,7 @@ class App extends Component<any, any> {
       />
 
       <ChatUsersContainer client={ this.props.client } profile={ this.state.profile } />
-    </React.Fragment>
+    </DivStyled>
   )
   
   private renderNavigation = (props: object) => {
