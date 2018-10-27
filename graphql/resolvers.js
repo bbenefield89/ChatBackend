@@ -82,7 +82,11 @@ const resolvers = {
       return user
     },
     
-    messages: async () => Message.findAll()
+    messages: async () => Message.findAll({
+      order: [
+        [ 'createdAt', 'DESC' ]
+      ]
+    })
   },
 
   Mutation: {

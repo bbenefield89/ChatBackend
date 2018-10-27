@@ -107,8 +107,8 @@ class ChatMessagesList extends Component<any, any> {
     
     this.setState({
       messages: [
-        ...this.state.messages,
-        newMessage
+        newMessage,
+        ...this.state.messages
       ]
     })
   }
