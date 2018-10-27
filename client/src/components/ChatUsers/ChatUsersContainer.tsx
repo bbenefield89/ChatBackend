@@ -52,7 +52,7 @@ class ChatUsersContainer extends Component<any, any> {
         `
       },
       method: 'POST',
-      url: 'http://localhost:3001/graphql'
+      url: `${ this.props.url }/graphql`
     }
 
     await axios(req)

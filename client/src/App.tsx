@@ -159,7 +159,11 @@ class App extends Component<any, any> {
         url={ this.props.url }
       />
 
-      <ChatUsersContainer client={ this.props.client } profile={ this.state.profile } />
+      <ChatUsersContainer
+        client={ this.props.client }
+        profile={ this.state.profile }
+        url={ this.props.url }
+      />
     </DivStyled>
   )
   
